@@ -1,0 +1,48 @@
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(to right, rgba(26, 35, 126, 0.05), rgba(49, 27, 146, 0.05));
+    border-radius: 1rem;
+}
+
+/* Feature Cards */
+.feature-card {
+    height: 100%;
+    background: white;
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Step Numbers */
+.step-number {
+    width: 40px;
+    height: 40px;
+    background: var(--primary-gradient-start);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-weight: bold;
+}
+
+/* CTA Section */
+.cta-section {
+    background: linear-gradient(to right, var(--primary-gradient-start), var(--primary-gradient-end));
+    color: white;
+}
+
+/* Primary Button */
+.btn-primary {
+    background: var(--primary-gradient-end);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: var(--primary-gradient-start);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}

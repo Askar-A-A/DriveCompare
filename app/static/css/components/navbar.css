@@ -1,0 +1,48 @@
+/* Custom Theme Variables */
+:root {
+    --primary-gradient-start: #1a237e;
+    --primary-gradient-end: #311b92;
+    --hover-color: #00e5ff;
+    --text-light: rgba(255, 255, 255, 0.7);
+}
+
+/* Navbar Base Styling */
+.navbar {
+    background: linear-gradient(to right, var(--primary-gradient-start), var(--primary-gradient-end));
+    padding: 1rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Brand/Logo */
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #fff !important;
+}
+
+/* Navigation Links */
+.nav-link {
+    color: var(--text-light) !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem !important;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: #fff !important;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background: rgba(0,0,0,0.05);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .nav-link {
+        padding: 0.5rem 1rem;
+    }
+}

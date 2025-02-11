@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}FuelCompare - Smart Vehicle Cost Comparison{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="row hero-section py-5 mb-5">
+        <div class="col-lg-6 d-flex flex-column justify-content-center">
+            <h1 class="display-4 fw-bold mb-3">Compare EV & ICE Vehicle Costs</h1>
+            <p class="lead mb-4">Make informed decisions with our comprehensive cost calculator. Compare electric and traditional vehicles across their entire lifecycle.</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <a href="#" class="btn btn-primary btn-lg px-4 me-md-2">Start Comparison</a>
+                <a href="#features" class="btn btn-outline-secondary btn-lg px-4">Learn More</a>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <img src="{{ url_for('static', filename='images/hero-image.svg') }}" alt="Vehicle Comparison" class="img-fluid">
+        </div>
+    </div>
+
+    <!-- Key Features -->
+    <div class="row mb-5" id="features">
+        <div class="col-12 text-center mb-4">
+            <h2 class="fw-bold">Complete Cost Analysis</h2>
+            <p class="lead text-muted">Everything you need to make the right choice</p>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="feature-card p-4 rounded shadow-sm">
+                <i class="fas fa-car-side fa-2x mb-3 text-primary"></i>
+                <h3 class="h5 fw-bold">Vehicle Details</h3>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Purchase Price</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Battery/Fuel Efficiency</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Maintenance Costs</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Depreciation Analysis</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="feature-card p-4 rounded shadow-sm">
+                <i class="fas fa-route fa-2x mb-3 text-primary"></i>
+                <h3 class="h5 fw-bold">Driving Patterns</h3>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Daily Commute</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Weekend Usage</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Long Distance Travel</li>
+                    <li><i class="fas fa-check text-success me-2"></i>City vs Highway Mix</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="feature-card p-4 rounded shadow-sm">
+                <i class="fas fa-plug fa-2x mb-3 text-primary"></i>
+                <h3 class="h5 fw-bold">Energy Costs</h3>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Electricity Rates</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Fuel Prices</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Charging Options</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Available Incentives</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <div class="row mb-5">
+        <div class="col-12 text-center mb-4">
+            <h2 class="fw-bold">How It Works</h2>
+            <p class="lead text-muted">Three simple steps to your comparison</p>
+        </div>
+
+        <div class="col-md-4 text-center mb-4">
+            <div class="step-card p-4">
+                <div class="step-number mb-3">1</div>
+                <h3 class="h5 fw-bold">Enter Vehicle Details</h3>
+                <p>Input basic information about the vehicles you want to compare</p>
+            </div>
+        </div>
+
+        <div class="col-md-4 text-center mb-4">
+            <div class="step-card p-4">
+                <div class="step-number mb-3">2</div>
+                <h3 class="h5 fw-bold">Add Usage Patterns</h3>
+                <p>Tell us about your driving habits and energy costs</p>
+            </div>
+        </div>
+
+        <div class="col-md-4 text-center mb-4">
+            <div class="step-card p-4">
+                <div class="step-number mb-3">3</div>
+                <h3 class="h5 fw-bold">Get Results</h3>
+                <p>Receive detailed cost comparison and analysis</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="row cta-section text-center py-5 mb-5 rounded">
+        <div class="col-lg-8 mx-auto">
+            <h2 class="fw-bold mb-3">Ready to Compare?</h2>
+            <p class="lead mb-4">Make an informed decision about your next vehicle purchase.</p>
+            <a href="#" class="btn btn-primary btn-lg px-5">Start Your Comparison</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
