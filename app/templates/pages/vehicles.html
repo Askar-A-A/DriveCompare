@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Vehicle Library - FuelCompare{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/vehicles.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="vehicles-container">
+    <!-- Header Section -->
+    <div class="vehicles-header text-center mb-4">
+        <h1>Vehicle Library</h1>
+        <p class="lead">Browse and compare different vehicle models</p>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="search-section mb-4">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="form-control" placeholder="Search vehicles...">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex gap-2">
+                    <select class="form-select">
+                        <option value="">Vehicle Type</option>
+                        <option value="ev">Electric</option>
+                        <option value="ice">Conventional</option>
+                        <option value="hybrid">Hybrid</option>
+                    </select>
+                    <select class="form-select">
+                        <option value="">Year</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                    </select>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-filter me-2"></i>Filter
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicles Grid -->
+    <div class="row g-4">
+        <!-- EV Card Example -->
+        <div class="col-md-6 col-lg-4">
+            <div class="vehicle-card ev-card">
+                <div class="card-badge ev">Electric</div>
+                <img src="{{ url_for('static', filename='images/placeholder.jpg') }}" class="card-img-top" alt="Tesla Model 3">
+                <div class="card-body">
+                    <h3>Tesla Model 3</h3>
+                    <div class="specs-grid">
+                        <div class="spec-item">
+                            <i class="fas fa-battery-full"></i>
+                            <span>82 kWh</span>
+                        </div>
+                        <div class="spec-item">
+                            <i class="fas fa-bolt"></i>
+                            <span>358 mi</span>
+                        </div>
+                        <div class="spec-item">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>3.1s 0-60</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-plus me-2"></i>Add to Comparison
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ICE Card Example -->
+        <div class="col-md-6 col-lg-4">
+            <div class="vehicle-card ice-card">
+                <div class="card-badge ice">Gas</div>
+                <img src="{{ url_for('static', filename='images/placeholder.jpg') }}" class="card-img-top" alt="Toyota Camry">
+                <div class="card-body">
+                    <h3>Toyota Camry</h3>
+                    <div class="specs-grid">
+                        <div class="spec-item">
+                            <i class="fas fa-gas-pump"></i>
+                            <span>32 MPG</span>
+                        </div>
+                        <div class="spec-item">
+                            <i class="fas fa-road"></i>
+                            <span>450 mi</span>
+                        </div>
+                        <div class="spec-item">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>5.7s 0-60</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-plus me-2"></i>Add to Comparison
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add more vehicle cards as needed -->
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-section text-center mt-5">
+        <nav aria-label="Vehicle pages">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1"><i class="fas fa-chevron-left"></i></a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#"><i class="fas fa-chevron-right"></i></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock %}

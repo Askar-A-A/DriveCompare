@@ -6,16 +6,13 @@
 <div class="container">
     <!-- Hero Section -->
     <div class="row hero-section py-5 mb-5">
-        <div class="col-lg-6 d-flex flex-column justify-content-center">
+        <div class="col-lg-8 mx-auto text-center">
             <h1 class="display-4 fw-bold mb-3">Compare EV & ICE Vehicle Costs</h1>
             <p class="lead mb-4">Make informed decisions with our comprehensive cost calculator. Compare electric and traditional vehicles across their entire lifecycle.</p>
-            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                <a href="#" class="btn btn-primary btn-lg px-4 me-md-2">Start Comparison</a>
+            <div class="d-grid gap-2 d-md-flex justify-content-center">
+                <a href="{{ url_for('comparison.landing') }}" class="btn btn-primary btn-lg px-4 me-md-2">Start Comparison</a>
                 <a href="#features" class="btn btn-outline-secondary btn-lg px-4">Learn More</a>
             </div>
-        </div>
-        <div class="col-lg-6">
-            <img src="{{ url_for('static', filename='images/hero-image.svg') }}" alt="Vehicle Comparison" class="img-fluid">
         </div>
     </div>
 

@@ -20,15 +20,10 @@
                        <i class="fas fa-home me-1"></i>Home
                     </a>
                 </li>
-                
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('main.home') }}">
-                        <i class="fas fa-chart-bar me-1"></i>Compare
-                    </a>
-                </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('main.home') }}">
+                    <a class="nav-link {{ 'active' if request.endpoint.startswith('vehicles.') }}" 
+                    href="{{ url_for('vehicles.landing') }}">
                         <i class="fas fa-car me-1"></i>Vehicles
                     </a>
                 </li>
