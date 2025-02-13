@@ -11,91 +11,77 @@
     <!-- Header Section -->
     <div class="comparison-header text-center mb-4">
         <h1>Vehicle Cost Comparison</h1>
-        <p class="lead">Compare the total cost of ownership between electric and conventional vehicles</p>
+        <p class="lead">Compare the total cost of ownership between vehicles</p>
     </div>
 
     <!-- Main Comparison Form -->
     <div class="comparison-form">
         <div class="row g-4">
-            <!-- Vehicle Selection Cards -->
-            <div class="col-md-6">
-                <div class="vehicle-card ev-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-charging-station me-2"></i>Electric Vehicle</h3>
-                    </div>
-                    <div class="card-body">
-                        <!-- Basic Details -->
-                        <div class="mb-3">
-                            <label class="form-label">Purchase Price</label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input type="number" class="form-control" id="evPrice">
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Battery Capacity (kWh)</label>
-                            <input type="number" class="form-control" id="evBattery">
-                        </div>
-                        <!-- Maintenance -->
-                        <div class="maintenance-section">
-                            <h5>Annual Maintenance</h5>
-                            <div class="mb-3">
-                                <label class="form-label">Service Cost</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">$</span>
-                                    <input type="number" class="form-control" id="evMaintenance">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="vehicle-card ice-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-gas-pump me-2"></i>Conventional Vehicle</h3>
-                    </div>
-                    <div class="card-body">
-                        <!-- Basic Details -->
-                        <div class="mb-3">
-                            <label class="form-label">Purchase Price</label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input type="number" class="form-control" id="icePrice">
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Fuel Efficiency (MPG)</label>
-                            <input type="number" class="form-control" id="iceMpg">
-                        </div>
-                        <!-- Maintenance -->
-                        <div class="maintenance-section">
-                            <h5>Annual Maintenance</h5>
-                            <div class="mb-3">
-                                <label class="form-label">Service Cost</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">$</span>
-                                    <input type="number" class="form-control" id="iceMaintenance">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Usage Pattern Section -->
+            <!-- Vehicle Selection Section -->
             <div class="col-12">
-                <div class="usage-card">
+                <div class="section-card">
+                    <h3><i class="fas fa-car me-2"></i>Vehicle Selection</h3>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="vehicle-selector">
+                                <h4>Vehicle 1</h4>
+                                <div class="mb-3">
+                                    <label class="form-label">Make</label>
+                                    <select class="form-select" id="vehicle1Make"></select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Model</label>
+                                    <select class="form-select" id="vehicle1Model"></select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Purchase Price</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="vehicle1Price">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="vehicle-selector">
+                                <h4>Vehicle 2</h4>
+                                <div class="mb-3">
+                                    <label class="form-label">Make</label>
+                                    <select class="form-select" id="vehicle2Make"></select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Model</label>
+                                    <select class="form-select" id="vehicle2Model"></select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Purchase Price</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="vehicle2Price">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Driving Habits Section -->
+            <div class="col-12">
+                <div class="section-card">
                     <h3><i class="fas fa-route me-2"></i>Driving Habits</h3>
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Daily Mileage</label>
-                            <input type="number" class="form-control" id="dailyMileage">
+                            <label class="form-label">Annual Miles Driven</label>
+                            <input type="number" class="form-control" id="annualMiles" value="15000">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Weekend Mileage</label>
-                            <input type="number" class="form-control" id="weekendMileage">
+                            <label class="form-label">Driving Type</label>
+                            <select class="form-select" id="drivingType">
+                                <option value="mixed">Mixed</option>
+                                <option value="city">City</option>
+                                <option value="highway">Highway</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -103,22 +89,46 @@
 
             <!-- Energy Costs Section -->
             <div class="col-12">
-                <div class="energy-card">
-                    <h3><i class="fas fa-bolt me-2"></i>Energy & Fuel Costs</h3>
+                <div class="section-card">
+                    <h3><i class="fas fa-bolt me-2"></i>Energy Costs</h3>
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Electricity Rate (per kWh)</label>
+                            <label class="form-label">Gas Price (per gallon)</label>
                             <div class="input-group">
                                 <span class="input-group-text">$</span>
-                                <input type="number" class="form-control" id="electricityRate">
+                                <input type="number" class="form-control" id="gasPrice">
+                                <button class="btn btn-outline-secondary" type="button">Auto-fill</button>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Fuel Price (per gallon)</label>
+                            <label class="form-label">Electricity Cost (per kWh)</label>
                             <div class="input-group">
                                 <span class="input-group-text">$</span>
-                                <input type="number" class="form-control" id="fuelPrice">
+                                <input type="number" class="form-control" id="electricityRate">
+                                <select class="form-select" style="max-width: 140px;">
+                                    <option value="home">Home</option>
+                                    <option value="solar">Solar</option>
+                                    <option value="public">Public Charger</option>
+                                </select>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ownership Period Section -->
+            <div class="col-12">
+                <div class="section-card">
+                    <h3><i class="fas fa-calendar me-2"></i>Ownership Period</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">Years of Ownership</label>
+                            <select class="form-select" id="ownershipYears">
+                                <option value="3">3 years</option>
+                                <option value="5" selected>5 years</option>
+                                <option value="7">7 years</option>
+                                <option value="10">10 years</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -127,7 +137,7 @@
             <!-- Calculate Button -->
             <div class="col-12 text-center">
                 <button class="btn btn-primary btn-lg calculate-btn">
-                    <i class="fas fa-calculator me-2"></i>Calculate Comparison
+                    <i class="fas fa-calculator me-2"></i>Calculate Total Cost of Ownership
                 </button>
             </div>
         </div>

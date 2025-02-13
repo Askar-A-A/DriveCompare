@@ -7,6 +7,7 @@
 /* Search Section */
 .search-box {
     position: relative;
+    height: 100%;
 }
 
 .search-icon {
@@ -15,11 +16,15 @@
     top: 50%;
     transform: translateY(-50%);
     color: var(--text-light);
+    z-index: 2;
 }
 
 .search-box .form-control {
     padding-left: 2.5rem;
     border-radius: 0.5rem;
+    height: 76px;
+    line-height: 1.5;
+    font-size: 1.25rem;
 }
 
 /* Vehicle Cards */
@@ -111,6 +116,36 @@
 
 .pagination .page-link:hover {
     background: rgba(26, 35, 126, 0.1);
+}
+
+/* Vehicle Icons */
+.vehicle-icon {
+    font-size: 120px;
+    display: block;
+    text-align: center;
+    padding: 30px 0;
+    background: linear-gradient(135deg, #f5f5f5, #ffffff);
+}
+
+.ev-card .vehicle-icon {
+    background: linear-gradient(135deg, var(--primary-gradient-start), #283593);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.ice-card .vehicle-icon {
+    background: linear-gradient(135deg, #1a237e, var(--primary-gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hybrid-card .vehicle-icon {
+    background: linear-gradient(135deg, #2e7d32, #4caf50);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 /* Responsive Adjustments */

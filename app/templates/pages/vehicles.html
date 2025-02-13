@@ -20,24 +20,24 @@
             <div class="col-md-6">
                 <div class="search-box">
                     <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="form-control" placeholder="Search vehicles...">
+                    <input type="text" class="form-control form-control-lg" placeholder="Search vehicles...">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="d-flex gap-2">
-                    <select class="form-select">
+                    <select class="form-select form-select-lg">
                         <option value="">Vehicle Type</option>
                         <option value="ev">Electric</option>
                         <option value="ice">Conventional</option>
                         <option value="hybrid">Hybrid</option>
                     </select>
-                    <select class="form-select">
+                    <select class="form-select form-select-lg">
                         <option value="">Year</option>
                         <option value="2024">2024</option>
                         <option value="2023">2023</option>
                         <option value="2022">2022</option>
                     </select>
-                    <button class="btn btn-primary">
+                    <button class="btn btn-primary btn-lg">
                         <i class="fas fa-filter me-2"></i>Filter
                     </button>
                 </div>
@@ -51,7 +51,7 @@
         <div class="col-md-6 col-lg-4">
             <div class="vehicle-card ev-card">
                 <div class="card-badge ev">Electric</div>
-                <img src="{{ url_for('static', filename='images/placeholder.jpg') }}" class="card-img-top" alt="Tesla Model 3">
+                <i class="fas fa-car-side vehicle-icon"></i>
                 <div class="card-body">
                     <h3>Tesla Model 3</h3>
                     <div class="specs-grid">
@@ -79,7 +79,7 @@
         <div class="col-md-6 col-lg-4">
             <div class="vehicle-card ice-card">
                 <div class="card-badge ice">Gas</div>
-                <img src="{{ url_for('static', filename='images/placeholder.jpg') }}" class="card-img-top" alt="Toyota Camry">
+                <i class="fas fa-car vehicle-icon"></i>
                 <div class="card-body">
                     <h3>Toyota Camry</h3>
                     <div class="specs-grid">
@@ -103,7 +103,33 @@
             </div>
         </div>
 
-        <!-- Add more vehicle cards as needed -->
+        <!-- Hybrid Card Example -->
+        <div class="col-md-6 col-lg-4">
+            <div class="vehicle-card hybrid-card">
+                <div class="card-badge hybrid">Hybrid</div>
+                <i class="fas fa-car-side vehicle-icon"></i>
+                <div class="card-body">
+                    <h3>Toyota Prius</h3>
+                    <div class="specs-grid">
+                        <div class="spec-item">
+                            <i class="fas fa-gas-pump"></i>
+                            <span>58 MPG</span>
+                        </div>
+                        <div class="spec-item">
+                            <i class="fas fa-road"></i>
+                            <span>640 mi</span>
+                        </div>
+                        <div class="spec-item">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>7.2s 0-60</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-plus me-2"></i>Add to Comparison
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Pagination -->
