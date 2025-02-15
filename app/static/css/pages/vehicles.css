@@ -53,11 +53,11 @@
 }
 
 .card-badge.ev {
-    background: linear-gradient(135deg, var(--primary-gradient-start), #283593);
+    background: #2E7D32;  /* Solid green */
 }
 
 .card-badge.ice {
-    background: linear-gradient(135deg, #1a237e, var(--primary-gradient-end));
+    background: #1a237e;  /* Solid purple */
 }
 
 .vehicle-card img {
@@ -128,21 +128,15 @@
 }
 
 .ev-card .vehicle-icon {
-    background: linear-gradient(135deg, var(--primary-gradient-start), #283593);
+    background: linear-gradient(135deg, #2E7D32, #4CAF50);  /* Green gradient */
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-.ice-card .vehicle-icon {
-    background: linear-gradient(135deg, #1a237e, var(--primary-gradient-end));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
+.ice-card .vehicle-icon,
 .hybrid-card .vehicle-icon {
-    background: linear-gradient(135deg, #2e7d32, #4caf50);
+    background: linear-gradient(135deg, #1a237e, var(--primary-gradient-end));  /* Purple gradient */
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
