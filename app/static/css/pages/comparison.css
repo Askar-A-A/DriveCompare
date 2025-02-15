@@ -70,6 +70,21 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Vehicle Selector Model-Trim Layout */
+.model-trim-row {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+}
+
+.model-field {
+    flex: 1;  /* Takes up 1 part - equal to trim */
+}
+
+.trim-field {
+    flex: 1;  /* Takes up 1 part - equal to model */
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .section-card {

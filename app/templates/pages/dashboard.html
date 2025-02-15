@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - FuelCompare{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Header Section -->
+    <div class="dashboard-header text-center mb-4">
+        <h1>Dashboard</h1>
+        <p class="lead">Your vehicle comparison insights</p>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-car"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Vehicles Compared</h3>
+                    <p class="stat-number">24</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Potential Savings</h3>
+                    <p class="stat-number">$3,450</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>CO2 Reduction</h3>
+                    <p class="stat-number">2.4 tons</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Comparisons -->
+    <div class="section-card mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Recent Comparisons</h2>
+            <button class="btn btn-primary">View All</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Vehicle 1</th>
+                        <th>Vehicle 2</th>
+                        <th>Cost Difference</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2024-03-15</td>
+                        <td>Tesla Model 3</td>
+                        <td>Toyota Camry</td>
+                        <td class="text-success">+$12,450</td>
+                        <td><button class="btn btn-sm btn-outline-primary">View</button></td>
+                    </tr>
+                    <tr>
+                        <td>2024-03-14</td>
+                        <td>Ford F-150 Lightning</td>
+                        <td>Ford F-150</td>
+                        <td class="text-success">+$8,320</td>
+                        <td><button class="btn btn-sm btn-outline-primary">View</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="section-card">
+                <h2>Quick Actions</h2>
+                <div class="quick-actions">
+                    <button class="btn btn-primary btn-lg w-100 mb-3">
+                        <i class="fas fa-plus me-2"></i>New Comparison
+                    </button>
+                    <button class="btn btn-outline-primary btn-lg w-100">
+                        <i class="fas fa-car me-2"></i>Browse Vehicles
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="section-card">
+                <h2>Saved Vehicles</h2>
+                <div class="saved-vehicles">
+                    <div class="saved-vehicle-item">
+                        <i class="fas fa-car-side"></i>
+                        <span>Tesla Model 3</span>
+                        <button class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="saved-vehicle-item">
+                        <i class="fas fa-car-side"></i>
+                        <span>Toyota Camry</span>
+                        <button class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

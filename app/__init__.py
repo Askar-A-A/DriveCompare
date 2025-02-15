@@ -12,8 +12,10 @@ def register_blueprints(app):
     from app.routes.main import main_bp
     from app.routes.comparison import comparison_bp
     from app.routes.vehicles import vehicles_bp
+    from app.routes.dashboard import dashboard_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(comparison_bp)
     app.register_blueprint(vehicles_bp)
+    app.register_blueprint(dashboard_bp)
     return app
