@@ -124,22 +124,15 @@
     display: block;
     text-align: center;
     padding: 30px 0;
-    background: linear-gradient(135deg, #f5f5f5, #ffffff);
 }
 
 .ev-card .vehicle-icon {
-    background: linear-gradient(135deg, #2E7D32, #4CAF50);  /* Green gradient */
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #2E7D32;  /* Same green as badge */
 }
 
 .ice-card .vehicle-icon,
 .hybrid-card .vehicle-icon {
-    background: linear-gradient(135deg, #1a237e, var(--primary-gradient-end));  /* Purple gradient */
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #1a237e;  /* Same purple as badge */
 }
 
 /* Responsive Adjustments */

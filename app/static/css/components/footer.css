@@ -1,8 +1,8 @@
 /* Import the same theme variables */
 :root {
-    --primary-gradient-start: #1a237e;
-    --primary-gradient-end: #311b92;
-    --hover-color: #00e5ff;
+    --primary-gradient-start: #0277BD;  /* Light Blue 800 */
+    --primary-gradient-end: #0288D1;    /* Light Blue 700 */
+    --hover-color: #81D4FA;             /* Light Blue 200 */
     --text-light: rgba(255, 255, 255, 0.7);
     --footer-shadow: 0 -2px 4px rgba(0,0,0,0.1);
 }

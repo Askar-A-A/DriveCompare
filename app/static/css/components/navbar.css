@@ -1,8 +1,8 @@
 /* Custom Theme Variables */
 :root {
-    --primary-gradient-start: #1a237e;
-    --primary-gradient-end: #311b92;
-    --hover-color: #00e5ff;
+    --primary-gradient-start: #0277BD;  /* Light Blue 800 */
+    --primary-gradient-end: #0288D1;    /* Light Blue 700 */
+    --hover-color: #81D4FA;             /* Light Blue 200 */
     --text-light: rgba(255, 255, 255, 0.7);
 }
 
@@ -17,20 +17,28 @@
 .navbar-brand {
     font-weight: 700;
     font-size: 1.5rem;
-    color: #fff !important;
+    color: white !important;
 }
 
 /* Navigation Links */
 .nav-link {
-    color: var(--text-light) !important;
+    color: white !important;            /* Changed from rgba to solid white */
     font-weight: 500;
-    padding: 0.5rem 1rem !important;
-    transition: color 0.3s ease;
+    padding: 0.75rem 1.25rem !important;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    margin: 0 0.2rem;
 }
 
-.nav-link:hover,
+.nav-link:hover {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
 .nav-link.active {
-    color: #fff !important;
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.2);
+    font-weight: 600;
 }
 
 /* Mobile Responsiveness */
