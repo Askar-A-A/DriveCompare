@@ -26,24 +26,26 @@
                             <div class="vehicle-selector">
                                 <h4>Vehicle 1</h4>
                                 <div class="mb-3">
+                                    <label class="form-label">Year</label>
+                                    <select class="form-select" id="vehicle1Year">
+                                        <option value="">Select Year</option>
+                                        {% for year in range(2024, 1994, -1) %}
+                                            <option value="{{ year }}">{{ year }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
                                     <label class="form-label">Make</label>
-                                    <select class="form-select" id="vehicle1Make"></select>
+                                    <select class="form-select" id="vehicle1Make" disabled>
+                                        <option value="">Select Make</option>
+                                    </select>
                                 </div>
                                 <div class="mb-3 model-trim-row">
                                     <div class="model-field">
                                         <label class="form-label">Model</label>
-                                        <select class="form-select" id="vehicle1Model"></select>
-                                    </div>
-                                    <div class="trim-field">
-                                        <label class="form-label">Trim</label>
-                                        <select class="form-select" id="vehicle1Trim"></select>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Purchase Price</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">$</span>
-                                        <input type="number" class="form-control" id="vehicle1Price">
+                                        <select class="form-select" id="vehicle1Model" disabled>
+                                            <option value="">Select Model</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -52,24 +54,26 @@
                             <div class="vehicle-selector">
                                 <h4>Vehicle 2</h4>
                                 <div class="mb-3">
+                                    <label class="form-label">Year</label>
+                                    <select class="form-select" id="vehicle2Year">
+                                        <option value="">Select Year</option>
+                                        {% for year in range(2024, 1994, -1) %}
+                                            <option value="{{ year }}">{{ year }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
                                     <label class="form-label">Make</label>
-                                    <select class="form-select" id="vehicle2Make"></select>
+                                    <select class="form-select" id="vehicle2Make" disabled>
+                                        <option value="">Select Make</option>
+                                    </select>
                                 </div>
                                 <div class="mb-3 model-trim-row">
                                     <div class="model-field">
                                         <label class="form-label">Model</label>
-                                        <select class="form-select" id="vehicle2Model"></select>
-                                    </div>
-                                    <div class="trim-field">
-                                        <label class="form-label">Trim</label>
-                                        <select class="form-select" id="vehicle2Trim"></select>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Purchase Price</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">$</span>
-                                        <input type="number" class="form-control" id="vehicle2Price">
+                                        <select class="form-select" id="vehicle2Model" disabled>
+                                            <option value="">Select Model</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>

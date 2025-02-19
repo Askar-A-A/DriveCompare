@@ -95,3 +95,32 @@
         margin-bottom: 1rem;
     }
 }
+
+/* Disabled state styling */
+.form-select:disabled {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+/* Loading indicator */
+.select-loading {
+    position: relative;
+}
+
+.select-loading::after {
+    content: '';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
+    border: 2px solid #ccc;
+    border-top-color: var(--primary-gradient-start);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
