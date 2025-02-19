@@ -7,9 +7,21 @@ class NHTSAService:
     @staticmethod
     def get_makes(year: int) -> List[Dict]:
         """Get all makes for a specific year"""
-        endpoint = f"vehicles/GetModelsForMakeYear/modelyear/{year}?format=json"
+        endpoint = f"vehicles/GetAllMakes?format=json"
         response = NHTSAService._make_request(endpoint)
-        return response.get('Results', []) if response else []
+        
+        makes = response.get('Results', []) if response else []
+        
+        available_makes = []
+        for make in makes:
+            make_name = make.get('Make_Name')
+            models_endpoint = f"vehicles/GetModelsForMakeYear/make/{make_name}/modelyear/{year}?format=json"
+            models_response = NHTSAService._make_request(models_endpoint)
+            
+            if models_response and models_response.get('Results'):
+                available_makes.append(make)
+        
+        return available_makes
     
     @staticmethod
     def get_models(make: str, year: int) -> List[Dict]:
