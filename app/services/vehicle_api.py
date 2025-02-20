@@ -5,23 +5,25 @@ class NHTSAService:
     BASE_URL = "https://vpic.nhtsa.dot.gov/api"
     
     @staticmethod
-    def get_makes(year: int) -> List[Dict]:
-        """Get all makes for a specific year"""
+    def get_makes() -> List[Dict]:
+        """Get all makes without year filtering"""
+        print("5. Starting get_makes in NHTSAService")
         endpoint = f"vehicles/GetAllMakes?format=json"
+        print(f"6. Calling NHTSA API endpoint: {endpoint}")
         response = NHTSAService._make_request(endpoint)
-        
-        makes = response.get('Results', []) if response else []
-        
-        available_makes = []
-        for make in makes:
-            make_name = make.get('Make_Name')
-            models_endpoint = f"vehicles/GetModelsForMakeYear/make/{make_name}/modelyear/{year}?format=json"
-            models_response = NHTSAService._make_request(models_endpoint)
-            
-            if models_response and models_response.get('Results'):
-                available_makes.append(make)
-        
-        return available_makes
+        print("6a. Received NHTSA API response:", response is not None)
+        results = response.get('Results', []) if response else []
+        print("6b. Extracted results:", len(results), "makes found")
+        return results
+    
+    @staticmethod
+    def get_years_for_make(make: str) -> List[int]:
+        """Get available years for a specific make"""
+        endpoint = f"vehicles/GetModelsForMake/{make}?format=json"
+        response = NHTSAService._make_request(endpoint)
+        models = response.get('Results', []) if response else []
+        years = set(int(model.get('Model_Year', 0)) for model in models if model.get('Model_Year'))
+        return sorted(list(years), reverse=True)
     
     @staticmethod
     def get_models(make: str, year: int) -> List[Dict]:
@@ -67,14 +69,18 @@ class NHTSAService:
         """Make API request with error handling"""
         try:
             url = f"{NHTSAService.BASE_URL}/{endpoint}"
+            print(f"6c. Making request to: {url}")
             response = requests.get(url)
+            print(f"6d. Response status code: {response.status_code}")
             
             if response.status_code == 200:
-                return response.json()
+                data = response.json()
+                print("6e. Successfully parsed JSON response")
+                return data
             else:
-                print(f"API Error: Status Code {response.status_code}")
+                print(f"6f. API Error: Status Code {response.status_code}")
                 return None
                 
         except requests.RequestException as e:
-            print(f"Request failed: {e}")
+            print(f"6g. Request failed: {e}")
             return None
