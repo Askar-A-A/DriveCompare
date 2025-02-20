@@ -1,6 +1,7 @@
 from flask import Flask
 from config import Config
 from app.database import db
+from app.routes.api import api_bp
 import app.models 
 
 def create_app(config_class=Config):
@@ -29,4 +30,5 @@ def register_blueprints(app):
     app.register_blueprint(comparison_bp)
     app.register_blueprint(vehicles_bp)
     app.register_blueprint(dashboard_bp)
+    app.register_blueprint(api_bp)
     return app
