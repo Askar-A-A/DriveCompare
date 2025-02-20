@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('1. Page loaded, initializing vehicle selectors');
     setupVehicleSelectors('1');
     setupVehicleSelectors('2');
 });
@@ -15,6 +14,7 @@ function setupVehicleSelectors(vehicleNum) {
     makeSelect.addEventListener('change', async function() {
         const make = this.value;
         
+        // Reset and disable downstream selects
         yearSelect.innerHTML = '<option value="">Select Year</option>';
         modelSelect.innerHTML = '<option value="">Select Model</option>';
         yearSelect.disabled = !make;
@@ -22,10 +22,23 @@ function setupVehicleSelectors(vehicleNum) {
 
         if (make) {
             try {
+                // Show loading state
+                yearSelect.innerHTML = '<option value="">Loading years...</option>';
+                
                 const response = await fetch(`/api/years/${make}`);
                 if (!response.ok) throw new Error('Failed to fetch years');
                 const years = await response.json();
                 
+                // Reset select
+                yearSelect.innerHTML = '<option value="">Select Year</option>';
+                
+                if (years.length === 0) {
+                    yearSelect.innerHTML = '<option value="">No years available</option>';
+                    yearSelect.disabled = true;
+                    return;
+                }
+
+                // Add years to select
                 years.forEach(year => {
                     const option = new Option(year.toString(), year);
                     yearSelect.add(option);
@@ -33,6 +46,7 @@ function setupVehicleSelectors(vehicleNum) {
                 yearSelect.disabled = false;
             } catch (error) {
                 console.error('Error fetching years:', error);
+                yearSelect.innerHTML = '<option value="">Error loading years</option>';
                 showError(`Failed to load years for ${make}`);
             }
         }
@@ -65,29 +79,21 @@ function setupVehicleSelectors(vehicleNum) {
 }
 
 async function loadMakes(makeSelect) {
-    console.log('2. Starting loadMakes function');
     try {
-        console.log('3. Sending fetch request to /api/makes');
         const response = await fetch('/api/makes');
-        console.log('8. Received response:', response.status);
         
         const data = await response.json();
-        console.log('9. Parsed JSON data:', data);
 
         makeSelect.innerHTML = '<option value="">Select Make</option>';
-        console.log('10. Cleared existing options');
 
         const makes = data.Results || data;
-        console.log('11. Processed makes array:', makes);
 
         if (Array.isArray(makes)) {
             makes.forEach(make => {
                 const makeName = make.Make_Name;
-                console.log('12. Adding make:', makeName);
                 const option = new Option(makeName, makeName);
                 makeSelect.add(option);
             });
-            console.log('13. Finished adding all makes to dropdown');
         }
     } catch (error) {
         console.error('ERROR in loadMakes:', error);

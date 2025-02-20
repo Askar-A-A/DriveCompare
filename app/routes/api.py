@@ -5,16 +5,63 @@ api_bp = Blueprint('api', __name__, url_prefix='/api')
 
 @api_bp.route('/makes')
 def get_makes():
-    """Get all makes"""
-    print("4. /api/makes route handler called")
     makes = NHTSAService.get_makes()
-    print("7. Received makes from NHTSAService:", makes[:2] if makes else "No makes received")
-    return jsonify(makes)
+    # Debug: Print total number and sample of makes
+    print(f"Total makes received: {len(makes)}")
+    print("Sample of first 10 makes:", [make['Make_Name'] for make in makes[:10]])
+    # Option 1: If we find the data is correct but want to filter popular makes
+    POPULAR_MAKES = {
+        # Japanese
+        'HONDA', 'TOYOTA', 'NISSAN', 'SUBARU', 'MAZDA', 'LEXUS', 'INFINITI', 'ACURA', 'MITSUBISHI',
+        'SCION', 'ISUZU', 'SUZUKI', 'DAIHATSU',
+        # American
+        'FORD', 'CHEVROLET', 'JEEP', 'CHRYSLER', 'DODGE', 'RAM', 'CADILLAC', 'BUICK', 'GMC', 
+        'LINCOLN', 'TESLA', 'HUMMER', 'PONTIAC', 'SATURN', 'MERCURY',
+        # German
+        'BMW', 'MERCEDES-BENZ', 'AUDI', 'VOLKSWAGEN', 'PORSCHE', 'MINI', 'OPEL', 
+        'SMART', 'MAYBACH', 'ALPINA',
+        # Korean
+        'HYUNDAI', 'KIA', 'GENESIS', 'SSANGYONG', 'DAEWOO',
+        # Chinese
+        'BYD', 'GEELY', 'GREAT WALL', 'NIO', 'XPENG', 'LI AUTO', 'MG', 'POLESTAR',
+        # Swedish
+        'VOLVO', 'SAAB', 'KOENIGSEGG',
+        # Italian
+        'ALFA ROMEO', 'MASERATI', 'FIAT', 'FERRARI', 'LAMBORGHINI', 'LANCIA', 'PAGANI',
+        # British
+        'JAGUAR', 'LAND ROVER', 'BENTLEY', 'ROLLS-ROYCE', 'ASTON MARTIN', 'LOTUS', 'MCLAREN',
+        'TRIUMPH', 'MG',
+        # French
+        'PEUGEOT', 'RENAULT', 'CITROEN', 'DS', 'BUGATTI', 'ALPINE',
+        # Other European
+        'SKODA', 'SEAT', 'RIMAC',
+        # Indian
+        'TATA', 'MAHINDRA',
+        # Malaysian
+        'PROTON', 'PERODUA',
+        # Vietnamese
+        'VINFAST',
+        # Other Luxury/Performance
+        'KOENIGSEGG', 'PININFARINA', 'ZENVO', 'LUCID', 'RIVIAN'
+    }
+    
+    # Filter to only popular makes
+    filtered_makes = [
+        make for make in makes 
+        if make.get('Make_Name', '').upper() in POPULAR_MAKES
+    ]
+    print(f"Filtered makes count: {len(filtered_makes)}")
+    return jsonify(filtered_makes)
+
 
 @api_bp.route('/years/<string:make>') 
 def get_years(make):
     """Get available years for a specific make"""
     years = NHTSAService.get_years_for_make(make)
+    if not years:
+        print(f"No years found for make: {make}")
+        return jsonify([])
+    print(f"Found {len(years)} years for {make}. Range: {min(years)} - {max(years)}")
     return jsonify(years)
 
 @api_bp.route('/models/<string:make>/<int:year>')
