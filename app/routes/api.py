@@ -54,15 +54,7 @@ def get_makes():
     return jsonify(filtered_makes)
 
 
-@api_bp.route('/years/<string:make>') 
-def get_years(make):
-    """Get available years for a specific make"""
-    years = NHTSAService.get_years_for_make(make)
-    if not years:
-        print(f"No years found for make: {make}")
-        return jsonify([])
-    print(f"Found {len(years)} years for {make}. Range: {min(years)} - {max(years)}")
-    return jsonify(years)
+
 
 @api_bp.route('/models/<string:make>/<int:year>')
 def get_models(make, year):
@@ -70,8 +62,3 @@ def get_models(make, year):
     models = NHTSAService.get_models(make, year)
     return jsonify(models)
 
-@api_bp.route('/vehicle/<string:vin>')
-def get_vehicle_info(vin):
-    """Get detailed vehicle information by VIN"""
-    vehicle_info = NHTSAService.get_vehicle_info(vin)
-    return jsonify(vehicle_info)

@@ -35,6 +35,9 @@
                                     <label class="form-label">Year</label>
                                     <select class="form-select" id="vehicle1Year" disabled>
                                         <option value="">Select Year</option>
+                                        {% for year in range(2024, 1994, -1) %}
+                                            <option value="{{ year }}">{{ year }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                                 <div class="mb-3 model-trim-row">
@@ -60,6 +63,9 @@
                                     <label class="form-label">Year</label>
                                     <select class="form-select" id="vehicle2Year" disabled>
                                         <option value="">Select Year</option>
+                                        {% for year in range(2024, 1994, -1) %}
+                                            <option value="{{ year }}">{{ year }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                                 <div class="mb-3 model-trim-row">

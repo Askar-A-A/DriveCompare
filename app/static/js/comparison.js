@@ -11,45 +11,13 @@ function setupVehicleSelectors(vehicleNum) {
     makeSelect.disabled = false;
     loadMakes(makeSelect);
 
-    makeSelect.addEventListener('change', async function() {
+    makeSelect.addEventListener('change', function() {
         const make = this.value;
         
         // Reset and disable downstream selects
-        yearSelect.innerHTML = '<option value="">Select Year</option>';
-        modelSelect.innerHTML = '<option value="">Select Model</option>';
         yearSelect.disabled = !make;
+        modelSelect.innerHTML = '<option value="">Select Model</option>';
         modelSelect.disabled = true;
-
-        if (make) {
-            try {
-                // Show loading state
-                yearSelect.innerHTML = '<option value="">Loading years...</option>';
-                
-                const response = await fetch(`/api/years/${make}`);
-                if (!response.ok) throw new Error('Failed to fetch years');
-                const years = await response.json();
-                
-                // Reset select
-                yearSelect.innerHTML = '<option value="">Select Year</option>';
-                
-                if (years.length === 0) {
-                    yearSelect.innerHTML = '<option value="">No years available</option>';
-                    yearSelect.disabled = true;
-                    return;
-                }
-
-                // Add years to select
-                years.forEach(year => {
-                    const option = new Option(year.toString(), year);
-                    yearSelect.add(option);
-                });
-                yearSelect.disabled = false;
-            } catch (error) {
-                console.error('Error fetching years:', error);
-                yearSelect.innerHTML = '<option value="">Error loading years</option>';
-                showError(`Failed to load years for ${make}`);
-            }
-        }
     });
 
     yearSelect.addEventListener('change', async function() {
@@ -61,10 +29,19 @@ function setupVehicleSelectors(vehicleNum) {
 
         if (make && year) {
             try {
+                modelSelect.innerHTML = '<option value="">Loading models...</option>';
+                
                 const response = await fetch(`/api/models/${make}/${year}`);
                 if (!response.ok) throw new Error('Failed to fetch models');
                 const models = await response.json();
                 
+                modelSelect.innerHTML = '<option value="">Select Model</option>';
+                
+                if (models.length === 0) {
+                    modelSelect.innerHTML = '<option value="">No models available</option>';
+                    return;
+                }
+
                 models.forEach(model => {
                     const option = new Option(model.Model_Name, model.Model_Name);
                     modelSelect.add(option);
@@ -72,6 +49,7 @@ function setupVehicleSelectors(vehicleNum) {
                 modelSelect.disabled = false;
             } catch (error) {
                 console.error('Error fetching models:', error);
+                modelSelect.innerHTML = '<option value="">Error loading models</option>';
                 showError(`Failed to load models for ${make} ${year}`);
             }
         }
