@@ -12,15 +12,23 @@ class NHTSAService:
         results = response.get('Results', []) if response else []
         return results
     
-    
     @staticmethod
-    def get_models(make: str, year: int) -> List[Dict]:
+    def get_vehicle_types(make: str) -> List[Dict]:
+        """Get all vehicle_types for a specific make"""
+        endpoint = f"vehicles/GetVehicleTypesForMake/{make}?format=json"
+        response = NHTSAService._make_request(endpoint)
+        if response:
+            results = response.get('Results', [])
+            return results
+        return []
+
+    @staticmethod
+    def get_models(make: str, year: int, vehicle_type: str) -> List[Dict]:
         """Get all models for a specific make and year"""
-        endpoint = f"vehicles/GetModelsForMakeYear/make/{make}/modelyear/{year}?format=json"
+        endpoint = f"vehicles/GetModelsForMakeYear/make/{make}/modelyear/{year}/vehicletype/{vehicle_type}?format=json"
         response = NHTSAService._make_request(endpoint)
         return response.get('Results', []) if response else []
     
-
     @staticmethod
     def _make_request(endpoint: str) -> Optional[Dict]:
         """Make API request with error handling"""

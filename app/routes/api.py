@@ -54,11 +54,18 @@ def get_makes():
     return jsonify(filtered_makes)
 
 
+@api_bp.route('/vehicle-types/<string:make>')
+def get_vehicle_types(make):
+    """Get all vehicle types for a specific make"""
+    vehicle_types = NHTSAService.get_vehicle_types(make)
+    if not vehicle_types:
+        return jsonify([])
+    return jsonify(vehicle_types)
 
 
-@api_bp.route('/models/<string:make>/<int:year>')
-def get_models(make, year):
+@api_bp.route('/models/<string:make>/<int:year>/<string:vehicle_type>')
+def get_models(make, year, vehicle_type):
     """Get all models for a specific make and year"""
-    models = NHTSAService.get_models(make, year)
+    models = NHTSAService.get_models(make, year, vehicle_type)
     return jsonify(models)
 
