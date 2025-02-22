@@ -119,20 +119,74 @@
 }
 
 /* Vehicle Icons */
-.vehicle-icon {
-    font-size: 120px;
-    display: block;
+.vehicle-icon-wrapper {
+    position: relative;
     text-align: center;
     padding: 30px 0;
 }
 
-.ev-card .vehicle-icon {
-    color: #2E7D32;  /* Same green as badge */
+.vehicle-icon {
+    font-size: 100px;
+    display: block;
+    margin: 0 auto;
+    transition: transform 0.3s ease;
 }
 
-.ice-card .vehicle-icon,
+.vehicle-icon-badge {
+    position: absolute;
+    bottom: 20px;
+    right: 30%;
+    font-size: 24px;
+    padding: 8px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Icon colors for different vehicle types */
+.ev-card .vehicle-icon {
+    color: #2E7D32;
+}
+
+.ev-card .vehicle-icon-badge {
+    color: #2E7D32;
+}
+
+.ice-card .vehicle-icon {
+    color: #1a237e;
+}
+
+.ice-card .vehicle-icon-badge {
+    color: #1a237e;
+}
+
 .hybrid-card .vehicle-icon {
-    color: #1a237e;  /* Same purple as badge */
+    color: #0277bd;
+}
+
+.hybrid-card .vehicle-icon-badge {
+    color: #0277bd;
+}
+
+/* Hover effects */
+.vehicle-card:hover .vehicle-icon {
+    transform: translateY(-5px);
+}
+
+.vehicle-card:hover .vehicle-icon-badge {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 /* Responsive Adjustments */
