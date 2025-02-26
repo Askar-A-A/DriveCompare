@@ -14,7 +14,6 @@
         <p class="lead">Compare the total cost of ownership between vehicles</p>
     </div>
 
-    <!-- Main Comparison Form -->
     <div class="comparison-form">
         <div class="row g-4">
             <!-- Vehicle Selection Section -->
@@ -22,71 +21,122 @@
                 <div class="section-card">
                     <h3><i class="fas fa-car me-2"></i>Vehicle Selection</h3>
                     <div class="row g-3">
+                        <!-- Vehicle 1 -->
                         <div class="col-md-6">
                             <div class="vehicle-selector">
                                 <h4>Vehicle 1</h4>
+                                <!-- Make Selection -->
                                 <div class="mb-3">
                                     <label class="form-label">Make</label>
-                                    <select class="form-select" id="vehicle1Make">
+                                    <select class="form-select" 
+                                            name="make1"
+                                            hx-get="{{ url_for('comparison.get_vehicle_types') }}"
+                                            hx-target="#vehicle1Type"
+                                            hx-trigger="change"
+                                            hx-swap="innerHTML">
                                         <option value="">Select Make</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Vehicle Type (Trim)</label>
-                                    <select class="form-select" id="vehicle1Type" disabled>
-                                        <option value="">Select Vehicle Type</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Year</label>
-                                    <select class="form-select" id="vehicle1Year" disabled>
-                                        <option value="">Select Year</option>
-                                        {% for year in range(2025, 1994, -1) %}
-                                            <option value="{{ year }}">{{ year }}</option>
+                                        {% for make in makes %}
+                                            <option value="{{ make[0] }}">{{ make[0] }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="mb-3 model-trim-row">
-                                    <div class="model-field">
-                                        <label class="form-label">Model</label>
-                                        <select class="form-select" id="vehicle1Model" disabled>
-                                            <option value="">Select Model</option>
-                                        </select>
-                                    </div>
+                                <!-- Vehicle Type Selection -->
+                                <div class="mb-3">
+                                    <label class="form-label">Vehicle Type</label>
+                                    <select class="form-select" 
+                                            id="vehicle1Type"
+                                            name="type1"
+                                            hx-get="{{ url_for('comparison.get_years') }}"
+                                            hx-target="#vehicle1Year"
+                                            hx-trigger="change"
+                                            hx-include="[name='make1'],[name='type1']"
+                                            hx-swap="innerHTML">
+                                        <option value="">Select Vehicle Type</option>
+                                    </select>
+                                </div>
+                                <!-- Year Selection -->
+                                <div class="mb-3">
+                                    <label class="form-label">Year</label>
+                                    <select class="form-select" 
+                                            id="vehicle1Year"
+                                            name="year1"
+                                            hx-get="{{ url_for('comparison.get_models') }}"
+                                            hx-target="#vehicle1Model"
+                                            hx-trigger="change"
+                                            hx-include="[name='make1'],[name='type1'],[name='year1']"
+                                            hx-swap="innerHTML">
+                                        <option value="">Select Year</option>
+                                    </select>
+                                </div>
+                                <!-- Model Selection -->
+                                <div class="mb-3">
+                                    <label class="form-label">Model</label>
+                                    <select class="form-select" 
+                                            id="vehicle1Model"
+                                            name="model1"
+                                            hx-swap="innerHTML">
+                                        <option value="">Select Model</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Vehicle 2 -->
                         <div class="col-md-6">
                             <div class="vehicle-selector">
                                 <h4>Vehicle 2</h4>
+                                <!-- Make Selection -->
                                 <div class="mb-3">
                                     <label class="form-label">Make</label>
-                                    <select class="form-select" id="vehicle2Make">
+                                    <select class="form-select" 
+                                            name="make2"
+                                            hx-get="{{ url_for('comparison.get_vehicle_types') }}"
+                                            hx-target="#vehicle2Type"
+                                            hx-trigger="change"
+                                            hx-swap="innerHTML">
                                         <option value="">Select Make</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Vehicle Type (Trim)</label>
-                                    <select class="form-select" id="vehicle2Type" disabled>
-                                        <option value="">Select Vehicle Type</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Year</label>
-                                    <select class="form-select" id="vehicle2Year" disabled>
-                                        <option value="">Select Year</option>
-                                        {% for year in range(2025, 1994, -1) %}
-                                            <option value="{{ year }}">{{ year }}</option>
+                                        {% for make in makes %}
+                                            <option value="{{ make[0] }}">{{ make[0] }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="mb-3 model-trim-row">
-                                    <div class="model-field">
-                                        <label class="form-label">Model</label>
-                                        <select class="form-select" id="vehicle2Model" disabled>
-                                            <option value="">Select Model</option>
-                                        </select>
-                                    </div>
+                                <!-- Vehicle Type Selection -->
+                                <div class="mb-3">
+                                    <label class="form-label">Vehicle Type</label>
+                                    <select class="form-select" 
+                                            id="vehicle2Type"
+                                            name="type2"
+                                            hx-get="{{ url_for('comparison.get_years') }}"
+                                            hx-target="#vehicle2Year"
+                                            hx-trigger="change"
+                                            hx-include="[name='make2'],[name='type2']"
+                                            hx-swap="innerHTML">
+                                        <option value="">Select Vehicle Type</option>
+                                    </select>
+                                </div>
+                                <!-- Year Selection -->
+                                <div class="mb-3">
+                                    <label class="form-label">Year</label>
+                                    <select class="form-select" 
+                                            id="vehicle2Year"
+                                            name="year2"
+                                            hx-get="{{ url_for('comparison.get_models') }}"
+                                            hx-target="#vehicle2Model"
+                                            hx-trigger="change"
+                                            hx-include="[name='make2'],[name='type2'],[name='year2']"
+                                            hx-swap="innerHTML">
+                                        <option value="">Select Year</option>
+                                    </select>
+                                </div>
+                                <!-- Model Selection -->
+                                <div class="mb-3">
+                                    <label class="form-label">Model</label>
+                                    <select class="form-select" 
+                                            id="vehicle2Model"
+                                            name="model2"
+                                            hx-swap="innerHTML">
+                                        <option value="">Select Model</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -179,5 +229,4 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/comparison.js') }}"></script>
 {% endblock %}

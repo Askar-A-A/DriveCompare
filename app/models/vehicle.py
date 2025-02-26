@@ -5,8 +5,8 @@ class Vehicle(db.Model):
     __tablename__ = 'vehicles'  # Explicitly name the table
     
     id = db.Column(db.Integer, primary_key=True)
-    make = db.Column(db.String(100), nullable=False)
-    model = db.Column(db.String(100), nullable=False)
+    make = db.Column(db.String(200), nullable=False)
+    model = db.Column(db.String(200), nullable=False)
     year = db.Column(db.Integer, nullable=False)
     type = db.Column(db.String(200))  # EV, ICE, or Hybrid
     
