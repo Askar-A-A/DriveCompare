@@ -30,7 +30,7 @@
                                     <label class="form-label">Make</label>
                                     <select class="form-select" 
                                             name="make1"
-                                            hx-get="{{ url_for('comparison.get_vehicle_types') }}"
+                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_vehicle_types') }}"
                                             hx-target="#vehicle1Type"
                                             hx-trigger="change"
                                             hx-swap="innerHTML">
@@ -46,7 +46,7 @@
                                     <select class="form-select" 
                                             id="vehicle1Type"
                                             name="type1"
-                                            hx-get="{{ url_for('comparison.get_years') }}"
+                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_years') }}"
                                             hx-target="#vehicle1Year"
                                             hx-trigger="change"
                                             hx-include="[name='make1'],[name='type1']"
@@ -60,7 +60,7 @@
                                     <select class="form-select" 
                                             id="vehicle1Year"
                                             name="year1"
-                                            hx-get="{{ url_for('comparison.get_models') }}"
+                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_models') }}"
                                             hx-target="#vehicle1Model"
                                             hx-trigger="change"
                                             hx-include="[name='make1'],[name='type1'],[name='year1']"
@@ -90,7 +90,7 @@
                                     <label class="form-label">Make</label>
                                     <select class="form-select" 
                                             name="make2"
-                                            hx-get="{{ url_for('comparison.get_vehicle_types') }}"
+                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_vehicle_types') }}"
                                             hx-target="#vehicle2Type"
                                             hx-trigger="change"
                                             hx-swap="innerHTML">
@@ -106,7 +106,7 @@
                                     <select class="form-select" 
                                             id="vehicle2Type"
                                             name="type2"
-                                            hx-get="{{ url_for('comparison.get_years') }}"
+                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_years') }}"
                                             hx-target="#vehicle2Year"
                                             hx-trigger="change"
                                             hx-include="[name='make2'],[name='type2']"
@@ -120,7 +120,7 @@
                                     <select class="form-select" 
                                             id="vehicle2Year"
                                             name="year2"
-                                            hx-get="{{ url_for('comparison.get_models') }}"
+                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_models') }}"
                                             hx-target="#vehicle2Model"
                                             hx-trigger="change"
                                             hx-include="[name='make2'],[name='type2'],[name='year2']"

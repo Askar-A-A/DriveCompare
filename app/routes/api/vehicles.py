@@ -1,15 +1,17 @@
 from flask import Blueprint, jsonify
 from app.services.vehicle_api import NHTSAService
 
-api_bp = Blueprint('api', __name__, url_prefix='/api')
+# Create a blueprint for vehicle API endpoints
+vehicles_api_bp = Blueprint('vehicles', __name__, url_prefix='/vehicles')
 
-@api_bp.route('/makes')
+@vehicles_api_bp.route('/makes')
 def get_makes():
     makes = NHTSAService.get_makes()
     # Debug: Print total number and sample of makes
     print(f"Total makes received: {len(makes)}")
     print("Sample of first 10 makes:", [make['Make_Name'] for make in makes[:10]])
-    # Option 1: If we find the data is correct but want to filter popular makes
+    
+    # Popular makes filter
     POPULAR_MAKES = {
         # Japanese
         'HONDA', 'TOYOTA', 'NISSAN', 'SUBARU', 'MAZDA', 'LEXUS', 'INFINITI', 'ACURA', 'MITSUBISHI',
@@ -45,16 +47,11 @@ def get_makes():
         'KOENIGSEGG', 'PININFARINA', 'ZENVO', 'LUCID', 'RIVIAN'
     }
     
-    # Filter to only popular makes
-    filtered_makes = [
-        make for make in makes 
-        if make.get('Make_Name', '').upper() in POPULAR_MAKES
-    ]
-    print(f"Filtered makes count: {len(filtered_makes)}")
+    # Filter to popular makes
+    filtered_makes = [make for make in makes if make['Make_Name'] in POPULAR_MAKES]
     return jsonify(filtered_makes)
 
-
-@api_bp.route('/vehicle-types/<string:make>')
+@vehicles_api_bp.route('/vehicle-types/<string:make>')
 def get_vehicle_types(make):
     """Get all vehicle types for a specific make"""
     vehicle_types = NHTSAService.get_vehicle_types(make)
@@ -62,10 +59,8 @@ def get_vehicle_types(make):
         return jsonify([])
     return jsonify(vehicle_types)
 
-
-@api_bp.route('/models/<string:make>/<int:year>/<string:vehicle_type>')
+@vehicles_api_bp.route('/models/<string:make>/<int:year>/<string:vehicle_type>')
 def get_models(make, year, vehicle_type):
     """Get all models for a specific make and year"""
     models = NHTSAService.get_models(make, year, vehicle_type)
     return jsonify(models)
-
