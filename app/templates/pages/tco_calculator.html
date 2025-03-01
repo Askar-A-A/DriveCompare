@@ -3,7 +3,7 @@
 {% block title %}Vehicle Comparison - FuelCompare{% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/comparison.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/tco_calculator.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -214,16 +214,24 @@
 
             <!-- Calculate Button -->
             <div class="col-12 text-center">
-                <button class="btn btn-primary btn-lg calculate-btn">
+                <button class="btn btn-primary btn-lg calculate-btn"
+                        hx-post="{{ url_for('tco_calculator.depreciation.compare_depreciation') }}"
+                        hx-include="[name='make1'],[name='type1'],[name='year1'],[name='model1'],[name='make2'],[name='type2'],[name='year2'],[name='model2'],#annualMiles,#ownershipYears"
+                        hx-target=".comparison-results"
+                        hx-swap="innerHTML"
+                        hx-indicator=".htmx-indicator">
                     <i class="fas fa-calculator me-2"></i>Calculate Total Cost of Ownership
                 </button>
+                <div class="htmx-indicator spinner-border text-primary mt-3" role="status" style="display:none">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Results Section (Initially Hidden) -->
-    <div class="comparison-results mt-4" style="display: none;">
-        <!-- Results will be dynamically populated -->
+    <!-- Results Section (Initially Empty) -->
+    <div class="comparison-results mt-4">
+        <!-- Results will be dynamically populated by HTMX -->
     </div>
 </div>
 {% endblock %}

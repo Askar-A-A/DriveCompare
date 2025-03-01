@@ -1,0 +1,115 @@
+<div class="results-container">
+    <h2 class="text-center mb-4">Total Cost of Ownership Analysis</h2>
+    
+    <!-- Vehicle Summary -->
+    <div class="section-card mb-4">
+        <h3><i class="fas fa-car me-2"></i>Vehicle Comparison</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="vehicle-summary">
+                    <h4>{{ vehicle1.make }} {{ vehicle1.model }} ({{ vehicle1.year }})</h4>
+                    <p><strong>Type:</strong> {{ vehicle1.type }}</p>
+                    <p><strong>Initial Price:</strong> ${{ "{:,.2f}".format(comparison.vehicle1.initial_price) }}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="vehicle-summary">
+                    <h4>{{ vehicle2.make }} {{ vehicle2.model }} ({{ vehicle2.year }})</h4>
+                    <p><strong>Type:</strong> {{ vehicle2.type }}</p>
+                    <p><strong>Initial Price:</strong> ${{ "{:,.2f}".format(comparison.vehicle2.initial_price) }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Depreciation Section -->
+    <div class="section-card mb-4">
+        <h3><i class="fas fa-chart-line me-2"></i>Depreciation Analysis</h3>
+        
+        <!-- Depreciation Summary -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ vehicle1.make }} {{ vehicle1.model }}</h5>
+                        <p><strong>Initial Value:</strong> ${{ "{:,.2f}".format(comparison.vehicle1.initial_price) }}</p>
+                        <p><strong>Value after {{ comparison.vehicle1.yearly_values|length }} years:</strong> ${{ "{:,.2f}".format(comparison.vehicle1.final_value) }}</p>
+                        <p><strong>Total Depreciation:</strong> ${{ "{:,.2f}".format(comparison.vehicle1.total_depreciation) }}</p>
+                        <p><strong>Depreciation Rate:</strong> {{ comparison.vehicle1.depreciation_percentage }}%</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ vehicle2.make }} {{ vehicle2.model }}</h5>
+                        <p><strong>Initial Value:</strong> ${{ "{:,.2f}".format(comparison.vehicle2.initial_price) }}</p>
+                        <p><strong>Value after {{ comparison.vehicle2.yearly_values|length }} years:</strong> ${{ "{:,.2f}".format(comparison.vehicle2.final_value) }}</p>
+                        <p><strong>Total Depreciation:</strong> ${{ "{:,.2f}".format(comparison.vehicle2.total_depreciation) }}</p>
+                        <p><strong>Depreciation Rate:</strong> {{ comparison.vehicle2.depreciation_percentage }}%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Depreciation Difference -->
+        <div class="alert {{ 'alert-success' if comparison.difference.total_depreciation_diff < 0 else 'alert-danger' }} mb-4">
+            <h5 class="alert-heading">Depreciation Difference</h5>
+            <p>
+                The {{ vehicle1.make }} {{ vehicle1.model }} will 
+                {% if comparison.difference.total_depreciation_diff > 0 %}
+                    depreciate <strong>${{ "{:,.2f}".format(comparison.difference.total_depreciation_diff) }} more</strong>
+                {% else %}
+                    depreciate <strong>${{ "{:,.2f}".format(-comparison.difference.total_depreciation_diff) }} less</strong>
+                {% endif %}
+                than the {{ vehicle2.make }} {{ vehicle2.model }} over {{ comparison.vehicle1.yearly_values|length }} years.
+            </p>
+        </div>
+        
+        <!-- Yearly Depreciation Table -->
+        <h4>Yearly Depreciation Breakdown</h4>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>{{ vehicle1.make }} {{ vehicle1.model }}</th>
+                        <th>{{ vehicle2.make }} {{ vehicle2.model }}</th>
+                        <th>Difference</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for year_data in comparison.vehicle1.yearly_values %}
+                    <tr>
+                        <td>Year {{ year_data.year }}</td>
+                        <td>${{ "{:,.2f}".format(year_data.end_value) }}</td>
+                        <td>${{ "{:,.2f}".format(comparison.vehicle2.yearly_values[loop.index0].end_value) }}</td>
+                        <td class="{{ 'text-success' if year_data.end_value > comparison.vehicle2.yearly_values[loop.index0].end_value else 'text-danger' }}">
+                            ${{ "{:,.2f}".format(year_data.end_value - comparison.vehicle2.yearly_values[loop.index0].end_value) }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Placeholder for Future TCO Components -->
+    <div class="section-card mb-4 d-none">
+        <h3><i class="fas fa-gas-pump me-2"></i>Fuel/Energy Costs</h3>
+        <!-- This section will be implemented later -->
+        <p class="text-muted">Coming soon</p>
+    </div>
+    
+    <div class="section-card mb-4 d-none">
+        <h3><i class="fas fa-tools me-2"></i>Maintenance Costs</h3>
+        <!-- This section will be implemented later -->
+        <p class="text-muted">Coming soon</p>
+    </div>
+    
+    <div class="section-card mb-4 d-none">
+        <h3><i class="fas fa-money-bill-wave me-2"></i>Total Cost Summary</h3>
+        <!-- This section will be implemented later -->
+        <p class="text-muted">Coming soon</p>
+    </div>
+</div> 

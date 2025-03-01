@@ -22,13 +22,13 @@ def create_app(config_class=Config):
 def register_blueprints(app):    
     from app.routes.main import main_bp
     from app.routes.tco_calculator import tco_calculator_bp
-    from app.routes.vehicles import vehicles_bp
     from app.routes.dashboard import dashboard_bp
+    from app.routes.vehicles import vehicles_bp
     from app.routes.api import api_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(tco_calculator_bp)
-    app.register_blueprint(vehicles_bp)
     app.register_blueprint(dashboard_bp)
+    app.register_blueprint(vehicles_bp)
     app.register_blueprint(api_bp)
     return app

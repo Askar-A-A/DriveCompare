@@ -8,7 +8,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app import create_app
 from app.models import Vehicle
-from app.services.vehicle_api import NHTSAService
+from app.services.data.vehicle_api import NHTSAService
 from app.database import db
 
 # Popular makes set
