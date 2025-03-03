@@ -17,6 +17,10 @@ class PricingService:
         """
         Get the current market price for a vehicle
         Uses caching to reduce API calls
+        
+        Returns:
+            float: The vehicle price if found
+            float: Estimated price if API fails
         """
         # Check if we have this in our database cache first
         cache_key = f"{make}_{model}_{year}_{trim}"
@@ -38,7 +42,7 @@ class PricingService:
                 'per_page': 1
             }
             
-            response = requests.get(url, params=params)
+            response = requests.get(url, params=params, verify=False)
             
             if response.status_code == 200:
                 data = response.json()
@@ -48,12 +52,102 @@ class PricingService:
                     PricingService._cache_price(cache_key, avg_price)
                     return avg_price
             
-            # Fallback to default estimation if API fails
-            return PricingService._estimate_price(make, model, year)
+            # If we couldn't get a price, estimate it
+            estimated_price = PricingService._estimate_price(make, model, year)
+            return estimated_price
             
         except Exception as e:
             print(f"Error fetching price data: {str(e)}")
+            # Fallback to estimation
             return PricingService._estimate_price(make, model, year)
+    
+    @staticmethod
+    def _estimate_price(make, model, year):
+        """Estimate vehicle price based on make, model and year"""
+        current_year = datetime.now().year
+        age = current_year - int(year)
+        
+        # Base prices by make (very simplified)
+        base_prices = {
+            'TOYOTA': 30000,
+            'HONDA': 28000,
+            'FORD': 32000,
+            'CHEVROLET': 33000,
+            'BMW': 50000,
+            'MERCEDES-BENZ': 55000,
+            'AUDI': 48000,
+            'LEXUS': 45000,
+            'TESLA': 60000,
+            'VOLKSWAGEN': 28000,
+            'SUBARU': 27000,
+            'NISSAN': 26000,
+            'KIA': 24000,
+            'HYUNDAI': 25000,
+            'MAZDA': 26000,
+            'JEEP': 35000,
+            'DODGE': 32000,
+            'RAM': 40000,
+            'GMC': 38000,
+            'CADILLAC': 50000,
+            'LINCOLN': 48000,
+            'ACURA': 40000,
+            'INFINITI': 42000,
+            'VOLVO': 45000,
+            'PORSCHE': 80000,
+            'JAGUAR': 60000,
+            'LAND ROVER': 70000,
+            'MINI': 30000,
+            'MITSUBISHI': 25000,
+            'BUICK': 32000,
+            'CHRYSLER': 30000,
+            'ALFA ROMEO': 45000,
+            'GENESIS': 45000,
+            'FIAT': 25000,
+            'MASERATI': 90000,
+            'BENTLEY': 200000,
+            'FERRARI': 250000,
+            'LAMBORGHINI': 300000,
+            'ROLLS-ROYCE': 350000,
+            'ASTON MARTIN': 200000,
+            'MCLAREN': 250000,
+            'BUGATTI': 2000000,
+            'LOTUS': 100000,
+        }
+        
+        # Get base price for make or use average
+        base_price = base_prices.get(make.upper(), 35000)
+        
+        # Apply age depreciation (simplified)
+        if age <= 1:
+            depreciation = 0.1  # 10% first year
+        elif age <= 3:
+            depreciation = 0.1 + (age - 1) * 0.08  # 8% per year after first
+        elif age <= 6:
+            depreciation = 0.26 + (age - 3) * 0.06  # 6% per year after third
+        elif age <= 10:
+            depreciation = 0.44 + (age - 6) * 0.04  # 4% per year after sixth
+        else:
+            depreciation = 0.6 + (age - 10) * 0.02  # 2% per year after tenth
+            
+        # Cap depreciation at 90%
+        depreciation = min(depreciation, 0.9)
+        
+        # Apply model adjustments (simplified)
+        model_lower = model.lower()
+        model_factor = 1.0
+        
+        # Luxury/premium models
+        if any(word in model_lower for word in ['premium', 'luxury', 'sport', 'limited', 'platinum', 'elite']):
+            model_factor = 1.2
+        
+        # Economy models
+        if any(word in model_lower for word in ['base', 'standard', 'economy', 'basic']):
+            model_factor = 0.9
+            
+        # Calculate final price
+        estimated_price = base_price * model_factor * (1 - depreciation)
+        
+        return round(estimated_price, 2)
     
     @staticmethod
     def _get_cached_price(cache_key):
@@ -100,23 +194,3 @@ class PricingService:
         except Exception as e:
             print(f"Error caching price: {str(e)}")
             db.session.rollback()
-    
-    @staticmethod
-    def _estimate_price(make, model, year):
-        """Fallback method to estimate price if API fails"""
-        current_year = datetime.now().year
-        age = current_year - int(year)
-        
-        # Very basic estimation logic
-        base_price = 30000
-        
-        # Adjust for premium brands
-        premium_brands = ['BMW', 'MERCEDES-BENZ', 'AUDI', 'LEXUS', 'TESLA', 'PORSCHE']
-        brand_multiplier = 1.5 if make.upper() in premium_brands else 1.0
-        
-        # Adjust for age
-        age_factor = max(0.5, 1 - (age * 0.08))
-        
-        estimated_price = base_price * brand_multiplier * age_factor
-        
-        return round(estimated_price, 2)

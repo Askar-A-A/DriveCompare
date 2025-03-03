@@ -26,6 +26,45 @@
     <div class="section-card mb-4">
         <h3><i class="fas fa-chart-line me-2"></i>Depreciation Analysis</h3>
         
+        <!-- Depreciation Graphs -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Depreciation Over Time</h5>
+                        <!-- Server-side generated chart will go here -->
+                        {% if depreciation_chart_url %}
+                            <img src="{{ depreciation_chart_url }}" alt="Depreciation Chart" class="img-fluid">
+                        {% else %}
+                            <div class="text-center text-muted py-5">
+                                <i class="fas fa-chart-line fa-3x mb-3"></i>
+                                <p>Chart will be generated on the server</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Value Retention Percentage</h5>
+                        <!-- Server-side generated chart will go here -->
+                        {% if retention_chart_url %}
+                            <img src="{{ retention_chart_url }}" alt="Value Retention Chart" class="img-fluid">
+                        {% else %}
+                            <div class="text-center text-muted py-5">
+                                <i class="fas fa-percentage fa-3x mb-3"></i>
+                                <p>Chart will be generated on the server</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <!-- Depreciation Summary -->
         <div class="row mb-3">
             <div class="col-md-6">
@@ -62,7 +101,7 @@
                 {% else %}
                     depreciate <strong>${{ "{:,.2f}".format(-comparison.difference.total_depreciation_diff) }} less</strong>
                 {% endif %}
-                than the {{ vehicle2.make }} {{ vehicle2.model }} over {{ comparison.vehicle1.yearly_values|length }} years.
+                than the {{ vehicle2.make }} {{ vehicle2.model }} over {{ years }} years with {{ "{:,}".format(annual_mileage) }} miles driven annually.
             </p>
         </div>
         

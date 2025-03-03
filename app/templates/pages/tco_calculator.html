@@ -25,47 +25,35 @@
                         <div class="col-md-6">
                             <div class="vehicle-selector">
                                 <h4>Vehicle 1</h4>
-                                <!-- Make Selection -->
-                                <div class="mb-3">
-                                    <label class="form-label">Make</label>
-                                    <select class="form-select" 
-                                            name="make1"
-                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_vehicle_types') }}"
-                                            hx-target="#vehicle1Type"
-                                            hx-trigger="change"
-                                            hx-swap="innerHTML">
-                                        <option value="">Select Make</option>
-                                        {% for make in makes %}
-                                            <option value="{{ make[0] }}">{{ make[0] }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <!-- Vehicle Type Selection -->
-                                <div class="mb-3">
-                                    <label class="form-label">Vehicle Type</label>
-                                    <select class="form-select" 
-                                            id="vehicle1Type"
-                                            name="type1"
-                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_years') }}"
-                                            hx-target="#vehicle1Year"
-                                            hx-trigger="change"
-                                            hx-include="[name='make1'],[name='type1']"
-                                            hx-swap="innerHTML">
-                                        <option value="">Select Vehicle Type</option>
-                                    </select>
-                                </div>
                                 <!-- Year Selection -->
                                 <div class="mb-3">
                                     <label class="form-label">Year</label>
                                     <select class="form-select" 
                                             id="vehicle1Year"
                                             name="year1"
+                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_makes') }}"
+                                            hx-target="#vehicle1Make"
+                                            hx-trigger="change"
+                                            hx-include="[name='year1']"
+                                            hx-swap="innerHTML">
+                                        <option value="">Select Year</option>
+                                        {% for year in years %}
+                                            <option value="{{ year[0] }}">{{ year[0] }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <!-- Make Selection -->
+                                <div class="mb-3">
+                                    <label class="form-label">Make</label>
+                                    <select class="form-select" 
+                                            id="vehicle1Make"
+                                            name="make1"
                                             hx-get="{{ url_for('tco_calculator.user_data_input.get_models') }}"
                                             hx-target="#vehicle1Model"
                                             hx-trigger="change"
-                                            hx-include="[name='make1'],[name='type1'],[name='year1']"
+                                            hx-include="[name='year1'],[name='make1']"
                                             hx-swap="innerHTML">
-                                        <option value="">Select Year</option>
+                                        <option value="">Select Make</option>
                                     </select>
                                 </div>
                                 <!-- Model Selection -->
@@ -74,10 +62,25 @@
                                     <select class="form-select" 
                                             id="vehicle1Model"
                                             name="model1"
+                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_fuel_types') }}"
+                                            hx-target="#vehicle1FuelType"
+                                            hx-trigger="change"
+                                            hx-include="[name='year1'],[name='make1'],[name='model1']"
                                             hx-swap="innerHTML">
                                         <option value="">Select Model</option>
                                     </select>
                                 </div>
+                                <!-- Fuel Type Selection -->
+                                <div class="mb-3">
+                                    <label class="form-label">Fuel Type</label>
+                                    <select class="form-select" 
+                                            id="vehicle1FuelType"
+                                            name="fuelType1">
+                                        <option value="">Select Fuel Type</option>
+                                    </select>
+                                </div>
+                                <!-- Vehicle Type (Hidden, will be determined automatically) -->
+                                <input type="hidden" id="vehicle1Type" name="type1" value="Auto">
                             </div>
                         </div>
 
@@ -85,47 +88,35 @@
                         <div class="col-md-6">
                             <div class="vehicle-selector">
                                 <h4>Vehicle 2</h4>
-                                <!-- Make Selection -->
-                                <div class="mb-3">
-                                    <label class="form-label">Make</label>
-                                    <select class="form-select" 
-                                            name="make2"
-                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_vehicle_types') }}"
-                                            hx-target="#vehicle2Type"
-                                            hx-trigger="change"
-                                            hx-swap="innerHTML">
-                                        <option value="">Select Make</option>
-                                        {% for make in makes %}
-                                            <option value="{{ make[0] }}">{{ make[0] }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <!-- Vehicle Type Selection -->
-                                <div class="mb-3">
-                                    <label class="form-label">Vehicle Type</label>
-                                    <select class="form-select" 
-                                            id="vehicle2Type"
-                                            name="type2"
-                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_years') }}"
-                                            hx-target="#vehicle2Year"
-                                            hx-trigger="change"
-                                            hx-include="[name='make2'],[name='type2']"
-                                            hx-swap="innerHTML">
-                                        <option value="">Select Vehicle Type</option>
-                                    </select>
-                                </div>
                                 <!-- Year Selection -->
                                 <div class="mb-3">
                                     <label class="form-label">Year</label>
                                     <select class="form-select" 
                                             id="vehicle2Year"
                                             name="year2"
+                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_makes') }}"
+                                            hx-target="#vehicle2Make"
+                                            hx-trigger="change"
+                                            hx-include="[name='year2']"
+                                            hx-swap="innerHTML">
+                                        <option value="">Select Year</option>
+                                        {% for year in years %}
+                                            <option value="{{ year[0] }}">{{ year[0] }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <!-- Make Selection -->
+                                <div class="mb-3">
+                                    <label class="form-label">Make</label>
+                                    <select class="form-select" 
+                                            id="vehicle2Make"
+                                            name="make2"
                                             hx-get="{{ url_for('tco_calculator.user_data_input.get_models') }}"
                                             hx-target="#vehicle2Model"
                                             hx-trigger="change"
-                                            hx-include="[name='make2'],[name='type2'],[name='year2']"
+                                            hx-include="[name='year2'],[name='make2']"
                                             hx-swap="innerHTML">
-                                        <option value="">Select Year</option>
+                                        <option value="">Select Make</option>
                                     </select>
                                 </div>
                                 <!-- Model Selection -->
@@ -134,10 +125,25 @@
                                     <select class="form-select" 
                                             id="vehicle2Model"
                                             name="model2"
+                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_fuel_types') }}"
+                                            hx-target="#vehicle2FuelType"
+                                            hx-trigger="change"
+                                            hx-include="[name='year2'],[name='make2'],[name='model2']"
                                             hx-swap="innerHTML">
                                         <option value="">Select Model</option>
                                     </select>
                                 </div>
+                                <!-- Fuel Type Selection -->
+                                <div class="mb-3">
+                                    <label class="form-label">Fuel Type</label>
+                                    <select class="form-select" 
+                                            id="vehicle2FuelType"
+                                            name="fuelType2">
+                                        <option value="">Select Fuel Type</option>
+                                    </select>
+                                </div>
+                                <!-- Vehicle Type (Hidden, will be determined automatically) -->
+                                <input type="hidden" id="vehicle2Type" name="type2" value="Auto">
                             </div>
                         </div>
                     </div>
@@ -150,8 +156,12 @@
                     <h3><i class="fas fa-route me-2"></i>Driving Habits</h3>
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Annual Miles Driven</label>
-                            <input type="number" class="form-control" id="annualMiles" value="15000">
+                            <label class="form-label">Annual Mileage</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="annualMiles" name="annualMiles" value="12000" min="1000" max="50000" step="1000">
+                                <span class="input-group-text">miles</span>
+                            </div>
+                            <small class="form-text text-muted">Enter your expected annual mileage</small>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Driving Type</label>
@@ -201,12 +211,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <label class="form-label">Years of Ownership</label>
-                            <select class="form-select" id="ownershipYears">
-                                <option value="3">3 years</option>
-                                <option value="5" selected>5 years</option>
-                                <option value="7">7 years</option>
-                                <option value="10">10 years</option>
-                            </select>
+                            <input type="number" class="form-control" id="ownershipYears" name="ownershipYears" value="5" min="1" max="15">
+                            <small class="form-text text-muted">Enter the number of years you plan to own the vehicle</small>
                         </div>
                     </div>
                 </div>
@@ -216,7 +222,7 @@
             <div class="col-12 text-center">
                 <button class="btn btn-primary btn-lg calculate-btn"
                         hx-post="{{ url_for('tco_calculator.depreciation.compare_depreciation') }}"
-                        hx-include="[name='make1'],[name='type1'],[name='year1'],[name='model1'],[name='make2'],[name='type2'],[name='year2'],[name='model2'],#annualMiles,#ownershipYears"
+                        hx-include="[name='year1'],[name='make1'],[name='model1'],[name='fuelType1'],[name='type1'],[name='year2'],[name='make2'],[name='model2'],[name='fuelType2'],[name='type2'],#annualMiles,#ownershipYears"
                         hx-target=".comparison-results"
                         hx-swap="innerHTML"
                         hx-indicator=".htmx-indicator">
@@ -232,6 +238,14 @@
     <!-- Results Section (Initially Empty) -->
     <div class="comparison-results mt-4">
         <!-- Results will be dynamically populated by HTMX -->
+        {% if depreciation_chart_url %}
+            <img src="{{ depreciation_chart_url }}" alt="Depreciation Chart" class="img-fluid">
+        {% else %}
+            <div class="text-center text-muted py-5">
+                <i class="fas fa-chart-line fa-3x mb-3"></i>
+                <p>Chart will be generated on the server</p>
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
