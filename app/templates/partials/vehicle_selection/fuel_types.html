@@ -1,0 +1,8 @@
+<option value="">Select Fuel Type</option>
+{% for fuel_type in fuel_types %}
+    {% if fuel_type is string %}
+        <option value="{{ fuel_type }}">{{ fuel_type }}</option>
+    {% else %}
+        <option value="{{ fuel_type[0] }}">{{ fuel_type[1] }}</option>
+    {% endif %}
+{% endfor %}

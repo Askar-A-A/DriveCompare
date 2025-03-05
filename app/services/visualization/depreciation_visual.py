@@ -108,3 +108,86 @@ class ChartService:
         plt.close()
         
         return f"data:image/png;base64,{encoded}"
+
+    @staticmethod
+    def generate_single_vehicle_chart(vehicle, depreciation_data):
+        """Generate a chart showing vehicle depreciation over time for a single vehicle"""
+        # Create figure and axis
+        plt.figure(figsize=(10, 6))
+        
+        # Extract data
+        years = list(range(len(depreciation_data['yearly_values']) + 1))
+        
+        # Vehicle values (starting with initial price)
+        values = [depreciation_data['initial_price']]
+        values.extend([year_data['end_value'] for year_data in depreciation_data['yearly_values']])
+        
+        # Plot data
+        plt.plot(years, values, 'b-', linewidth=2.5, label=f"{vehicle.make} {vehicle.model}")
+        
+        # Add labels and title
+        plt.xlabel('Years')
+        plt.ylabel('Value ($)')
+        plt.title('Vehicle Value Over Time (Dollars)')
+        plt.grid(True, alpha=0.3)
+        plt.legend()
+        
+        # Format y-axis as currency
+        plt.gca().yaxis.set_major_formatter('${x:,.0f}')
+        
+        # Save to memory
+        img = io.BytesIO()
+        plt.savefig(img, format='png', bbox_inches='tight', dpi=100)
+        img.seek(0)
+        
+        # Encode as base64 for HTML embedding
+        encoded = base64.b64encode(img.getvalue()).decode('utf-8')
+        plt.close()
+        
+        return f"data:image/png;base64,{encoded}"
+
+    @staticmethod
+    def generate_single_vehicle_retention_chart(vehicle, depreciation_data):
+        """Generate a chart showing value retention percentage for a single vehicle"""
+        # Create figure and axis
+        plt.figure(figsize=(10, 6))
+        
+        # Extract data
+        years = list(range(len(depreciation_data['yearly_values']) + 1))
+        
+        # Calculate retention percentages
+        initial = depreciation_data['initial_price']
+        
+        # Start with 100% retention
+        retention = [100]
+        values = [depreciation_data['initial_price']]
+        values.extend([year_data['end_value'] for year_data in depreciation_data['yearly_values']])
+        for value in values[1:]:
+            retention.append((value / initial) * 100)
+        
+        # Plot data
+        plt.plot(years, retention, 'b-', linewidth=2.5, label=f"{vehicle.make} {vehicle.model}")
+        
+        # Set y-axis limits
+        plt.ylim(0, 105)  # Set y-axis from 0% to 105%
+        
+        # Add labels and title
+        plt.xlabel('Years')
+        plt.ylabel('Value Retained (%)')
+        plt.title('Value Retention Percentage')
+        plt.grid(True, alpha=0.3)
+        plt.legend()
+        
+        # Format y-axis as percentage
+        plt.gca().yaxis.set_major_formatter('{x:.0f}%')
+        
+        # Save to memory
+        img = io.BytesIO()
+        plt.savefig(img, format='png', bbox_inches='tight', dpi=100)
+        img.seek(0)
+        
+        # Encode as base64 for HTML embedding
+        encoded = base64.b64encode(img.getvalue()).decode('utf-8')
+        plt.close()
+        
+        return f"data:image/png;base64,{encoded}"

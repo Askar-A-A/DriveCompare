@@ -24,7 +24,7 @@
                         <!-- Vehicle 1 -->
                         <div class="col-md-6">
                             <div class="vehicle-selector">
-                                <h4>Vehicle 1</h4>
+                                <h4>Primary Vehicle</h4>
                                 <!-- Year Selection -->
                                 <div class="mb-3">
                                     <label class="form-label">Year</label>
@@ -84,66 +84,16 @@
                             </div>
                         </div>
 
-                        <!-- Vehicle 2 -->
-                        <div class="col-md-6">
-                            <div class="vehicle-selector">
-                                <h4>Vehicle 2</h4>
-                                <!-- Year Selection -->
-                                <div class="mb-3">
-                                    <label class="form-label">Year</label>
-                                    <select class="form-select" 
-                                            id="vehicle2Year"
-                                            name="year2"
-                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_makes') }}"
-                                            hx-target="#vehicle2Make"
-                                            hx-trigger="change"
-                                            hx-include="[name='year2']"
-                                            hx-swap="innerHTML">
-                                        <option value="">Select Year</option>
-                                        {% for year in years %}
-                                            <option value="{{ year[0] }}">{{ year[0] }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <!-- Make Selection -->
-                                <div class="mb-3">
-                                    <label class="form-label">Make</label>
-                                    <select class="form-select" 
-                                            id="vehicle2Make"
-                                            name="make2"
-                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_models') }}"
-                                            hx-target="#vehicle2Model"
-                                            hx-trigger="change"
-                                            hx-include="[name='year2'],[name='make2']"
-                                            hx-swap="innerHTML">
-                                        <option value="">Select Make</option>
-                                    </select>
-                                </div>
-                                <!-- Model Selection -->
-                                <div class="mb-3">
-                                    <label class="form-label">Model</label>
-                                    <select class="form-select" 
-                                            id="vehicle2Model"
-                                            name="model2"
-                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_fuel_types') }}"
-                                            hx-target="#vehicle2FuelType"
-                                            hx-trigger="change"
-                                            hx-include="[name='year2'],[name='make2'],[name='model2']"
-                                            hx-swap="innerHTML">
-                                        <option value="">Select Model</option>
-                                    </select>
-                                </div>
-                                <!-- Fuel Type Selection -->
-                                <div class="mb-3">
-                                    <label class="form-label">Fuel Type</label>
-                                    <select class="form-select" 
-                                            id="vehicle2FuelType"
-                                            name="fuelType2">
-                                        <option value="">Select Fuel Type</option>
-                                    </select>
-                                </div>
-                                <!-- Vehicle Type (Hidden, will be determined automatically) -->
-                                <input type="hidden" id="vehicle2Type" name="type2" value="Auto">
+                        <!-- Comparison Toggle Area -->
+                        <div class="col-md-6" id="comparisonToggleArea">
+                            <!-- Initially show the "Compare with Another Vehicle" button -->
+                            <div class="d-flex justify-content-center align-items-center h-100">
+                                <button type="button" class="btn btn-outline-primary btn-lg"
+                                        hx-get="{{ url_for('tco_calculator.user_data_input.toggle_comparison', show='true') }}"
+                                        hx-target="#comparisonToggleArea"
+                                        hx-swap="innerHTML">
+                                    <i class="fas fa-plus-circle me-2"></i>Compare with Another Vehicle
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -221,12 +171,13 @@
             <!-- Calculate Button -->
             <div class="col-12 text-center">
                 <button class="btn btn-primary btn-lg calculate-btn"
+                        id="calculateButton"
                         hx-post="{{ url_for('tco_calculator.depreciation.compare_depreciation') }}"
                         hx-include="[name='year1'],[name='make1'],[name='model1'],[name='fuelType1'],[name='type1'],[name='year2'],[name='make2'],[name='model2'],[name='fuelType2'],[name='type2'],#annualMiles,#ownershipYears"
                         hx-target=".comparison-results"
                         hx-swap="innerHTML"
                         hx-indicator=".htmx-indicator">
-                    <i class="fas fa-calculator me-2"></i>Calculate Total Cost of Ownership
+                    <i class="fas fa-calculator me-2"></i><span id="calculateButtonText">Calculate Cost of Ownership</span>
                 </button>
                 <div class="htmx-indicator spinner-border text-primary mt-3" role="status" style="display:none">
                     <span class="visually-hidden">Loading...</span>

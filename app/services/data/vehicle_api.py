@@ -172,16 +172,45 @@ class EPAFuelEconomyService:
         # Get fuel types from vehicle details
         fuel_types = set()
         
-        # Limit to first 3 vehicle IDs to avoid too many API calls
-        for vehicle_id in vehicle_ids[:3]:
+        # Limit to first 5 vehicle IDs to avoid too many API calls
+        for vehicle_id in vehicle_ids[:5]:
             vehicle_endpoint = f"vehicle/{vehicle_id}"
             vehicle_response = EPAFuelEconomyService._make_request(vehicle_endpoint)
             
             if vehicle_response:
-                # Extract fuel type from vehicle details
+                # Extract fuel type and enhance it with more information
                 fuel_type = vehicle_response.get('fuelType')
                 if fuel_type:
-                    fuel_types.add((fuel_type, fuel_type))
+                    # Map basic fuel types to more descriptive versions
+                    if fuel_type == 'Regular Gasoline' or fuel_type == 'Regular':
+                        display_name = 'Gasoline (Regular 87 octane)'
+                    elif fuel_type == 'Premium Gasoline' or fuel_type == 'Premium':
+                        display_name = 'Gasoline (Premium 91-93 octane)'
+                    elif fuel_type == 'Midgrade Gasoline' or fuel_type == 'Midgrade':
+                        display_name = 'Gasoline (Midgrade 89 octane)'
+                    elif 'Electricity' in fuel_type:
+                        if 'and' in fuel_type:
+                            if 'Premium' in fuel_type:
+                                display_name = 'Plug-in Hybrid (Premium Gas + Electric)'
+                            else:
+                                display_name = 'Plug-in Hybrid (Regular Gas + Electric)'
+                        else:
+                            # Pure electric
+                            display_name = 'Electric Vehicle (Battery Only)'
+                    elif 'Hybrid' in fuel_type:
+                        display_name = 'Hybrid (Gasoline + Electric, Non Plug-in)'
+                    elif 'Diesel' in fuel_type:
+                        display_name = 'Diesel Fuel'
+                    elif 'E85' in fuel_type or 'Flex' in fuel_type:
+                        display_name = 'Flex Fuel (E85 Ethanol/Gasoline)'
+                    elif 'Natural Gas' in fuel_type or 'CNG' in fuel_type:
+                        display_name = 'Compressed Natural Gas (CNG)'
+                    else:
+                        # If we can't map it, use the original with a note
+                        display_name = f'{fuel_type} (See vehicle manual)'
+                    
+                    # Add to our set of fuel types
+                    fuel_types.add((fuel_type, display_name))
         
         # Convert to list and sort
         fuel_types = sorted(list(fuel_types))
@@ -201,14 +230,17 @@ class EPAFuelEconomyService:
     
     @staticmethod
     def default_fuel_types() -> List[Tuple[str, str]]:
-        """Return default fuel types if API fails"""
+        """Return default fuel types with clear descriptions if API fails"""
         return [
-            ('Gasoline', 'Gasoline'),
-            ('Diesel', 'Diesel'),
-            ('Hybrid', 'Hybrid'),
-            ('Plug-in Hybrid', 'Plug-in Hybrid'),
-            ('Electric', 'Electric'),
-            ('Flex-Fuel', 'Flex-Fuel')
+            ('Regular Gasoline', 'Gasoline (Regular 87 octane)'),
+            ('Premium Gasoline', 'Gasoline (Premium 91-93 octane)'),
+            ('Midgrade Gasoline', 'Gasoline (Midgrade 89 octane)'),
+            ('Diesel', 'Diesel Fuel'),
+            ('Electricity', 'Electric Vehicle (Battery Only)'),
+            ('Regular Gasoline and Electricity', 'Plug-in Hybrid (Regular Gas + Electric)'),
+            ('Premium Gasoline and Electricity', 'Plug-in Hybrid (Premium Gas + Electric)'),
+            ('Hybrid', 'Hybrid (Gasoline + Electric, Non Plug-in)'),
+            ('E85', 'Flex Fuel (E85 Ethanol/Gasoline)')
         ]
     
     @staticmethod

@@ -1,17 +1,26 @@
 <div class="results-container">
-    <h2 class="text-center mb-4">Total Cost of Ownership Analysis</h2>
+    <h2 class="text-center mb-4">
+        {% if is_comparison %}
+            Total Cost of Ownership Comparison
+        {% else %}
+            Total Cost of Ownership Analysis
+        {% endif %}
+    </h2>
     
     <!-- Vehicle Summary -->
     <div class="section-card mb-4">
-        <h3><i class="fas fa-car me-2"></i>Vehicle Comparison</h3>
+        <h3><i class="fas fa-car me-2"></i>
+            {% if is_comparison %}Vehicle Comparison{% else %}Vehicle Details{% endif %}
+        </h3>
         <div class="row">
-            <div class="col-md-6">
+            <div class="{% if is_comparison %}col-md-6{% else %}col-md-12{% endif %}">
                 <div class="vehicle-summary">
                     <h4>{{ vehicle1.make }} {{ vehicle1.model }} ({{ vehicle1.year }})</h4>
                     <p><strong>Type:</strong> {{ vehicle1.type }}</p>
                     <p><strong>Initial Price:</strong> ${{ "{:,.2f}".format(comparison.vehicle1.initial_price) }}</p>
                 </div>
             </div>
+            {% if is_comparison %}
             <div class="col-md-6">
                 <div class="vehicle-summary">
                     <h4>{{ vehicle2.make }} {{ vehicle2.model }} ({{ vehicle2.year }})</h4>
@@ -19,6 +28,7 @@
                     <p><strong>Initial Price:</strong> ${{ "{:,.2f}".format(comparison.vehicle2.initial_price) }}</p>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
     
@@ -67,7 +77,7 @@
         
         <!-- Depreciation Summary -->
         <div class="row mb-3">
-            <div class="col-md-6">
+            <div class="{% if is_comparison %}col-md-6{% else %}col-md-12{% endif %}">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{ vehicle1.make }} {{ vehicle1.model }}</h5>
@@ -78,6 +88,7 @@
                     </div>
                 </div>
             </div>
+            {% if is_comparison %}
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
@@ -89,9 +100,11 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
         
-        <!-- Depreciation Difference -->
+        <!-- Depreciation Difference (only for comparison) -->
+        {% if is_comparison %}
         <div class="alert {{ 'alert-success' if comparison.difference.total_depreciation_diff < 0 else 'alert-danger' }} mb-4">
             <h5 class="alert-heading">Depreciation Difference</h5>
             <p>
@@ -104,6 +117,7 @@
                 than the {{ vehicle2.make }} {{ vehicle2.model }} over {{ years }} years with {{ "{:,}".format(annual_mileage) }} miles driven annually.
             </p>
         </div>
+        {% endif %}
         
         <!-- Yearly Depreciation Table -->
         <h4>Yearly Depreciation Breakdown</h4>
@@ -113,8 +127,10 @@
                     <tr>
                         <th>Year</th>
                         <th>{{ vehicle1.make }} {{ vehicle1.model }}</th>
+                        {% if is_comparison %}
                         <th>{{ vehicle2.make }} {{ vehicle2.model }}</th>
                         <th>Difference</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
@@ -122,10 +138,12 @@
                     <tr>
                         <td>Year {{ year_data.year }}</td>
                         <td>${{ "{:,.2f}".format(year_data.end_value) }}</td>
+                        {% if is_comparison %}
                         <td>${{ "{:,.2f}".format(comparison.vehicle2.yearly_values[loop.index0].end_value) }}</td>
                         <td class="{{ 'text-success' if year_data.end_value > comparison.vehicle2.yearly_values[loop.index0].end_value else 'text-danger' }}">
                             ${{ "{:,.2f}".format(year_data.end_value - comparison.vehicle2.yearly_values[loop.index0].end_value) }}
                         </td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>
