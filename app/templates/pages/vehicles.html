@@ -11,7 +11,7 @@
     <!-- Header Section -->
     <div class="vehicles-header text-center mb-4">
         <h1>Vehicle Library</h1>
-        <p class="lead">Browse and compare different vehicle models</p>
+        <p class="lead">Your analyzed vehicles and comparison history</p>
     </div>
 
     <!-- Search and Filter Section -->
@@ -20,142 +20,135 @@
             <div class="col-md-6">
                 <div class="search-box">
                     <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="form-control form-control-lg" placeholder="Search vehicles...">
+                    <input type="text" class="form-control form-control-lg" placeholder="Search vehicles..." 
+                           hx-post="{{ url_for('vehicles.search') }}"
+                           hx-trigger="keyup changed delay:500ms"
+                           hx-target="#vehicles-grid"
+                           hx-indicator=".search-indicator">
+                    <div class="search-indicator htmx-indicator spinner-border spinner-border-sm text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="d-flex gap-2">
-                    <select class="form-select form-select-lg">
+                    <select class="form-select form-select-lg" 
+                            hx-post="{{ url_for('vehicles.filter') }}"
+                            hx-trigger="change"
+                            hx-target="#vehicles-grid"
+                            hx-indicator=".filter-indicator"
+                            name="vehicle_type">
                         <option value="">Vehicle Type</option>
                         <option value="ev">Electric</option>
                         <option value="ice">Conventional</option>
                         <option value="hybrid">Hybrid</option>
                     </select>
-                    <select class="form-select form-select-lg">
+                    <select class="form-select form-select-lg"
+                            hx-post="{{ url_for('vehicles.filter') }}"
+                            hx-trigger="change"
+                            hx-target="#vehicles-grid"
+                            hx-indicator=".filter-indicator"
+                            name="year">
                         <option value="">Year</option>
-                        <option value="2024">2024</option>
-                        <option value="2023">2023</option>
-                        <option value="2022">2022</option>
+                        {% for year in years %}
+                            <option value="{{ year }}">{{ year }}</option>
+                        {% endfor %}
                     </select>
-                    <button class="btn btn-primary btn-lg">
-                        <i class="fas fa-filter me-2"></i>Filter
-                    </button>
+                    <div class="filter-indicator htmx-indicator spinner-border spinner-border-sm text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Vehicles Grid -->
-    <div class="row g-4">
-        <!-- EV Card Example -->
+    <div class="row g-4" id="vehicles-grid">
+        {% for vehicle in vehicles %}
         <div class="col-md-6 col-lg-4">
-            <div class="vehicle-card ev-card">
-                <div class="card-badge ev">Electric</div>
+            <div class="vehicle-card {% if 'electric' in vehicle.fuel_type.lower() %}ev-card{% elif 'hybrid' in vehicle.fuel_type.lower() %}hybrid-card{% else %}ice-card{% endif %}">
+                <div class="card-badge {% if 'electric' in vehicle.fuel_type.lower() %}ev{% elif 'hybrid' in vehicle.fuel_type.lower() %}hybrid{% else %}ice{% endif %}">
+                    {{ vehicle.fuel_type }}
+                </div>
                 <div class="vehicle-icon-wrapper">
                     <i class="fas fa-car vehicle-icon"></i>
-                    <i class="fas fa-bolt vehicle-icon-badge"></i>
+                    {% if 'electric' in vehicle.fuel_type.lower() %}
+                        <i class="fas fa-bolt vehicle-icon-badge"></i>
+                    {% elif 'hybrid' in vehicle.fuel_type.lower() %}
+                        <i class="fas fa-leaf vehicle-icon-badge"></i>
+                    {% else %}
+                        <i class="fas fa-gas-pump vehicle-icon-badge"></i>
+                    {% endif %}
                 </div>
                 <div class="card-body">
-                    <h3>Tesla Model 3</h3>
-                    <div class="specs-grid">
-                        <div class="spec-item">
-                            <i class="fas fa-battery-full"></i>
-                            <span>82 kWh</span>
-                        </div>
-                        <div class="spec-item">
-                            <i class="fas fa-bolt"></i>
-                            <span>358 mi</span>
-                        </div>
-                        <div class="spec-item">
-                            <i class="fas fa-tachometer-alt"></i>
-                            <span>3.1s 0-60</span>
-                        </div>
+                    <h3>{{ vehicle.make }} {{ vehicle.model }}</h3>
+                    <div class="year-badge">{{ vehicle.year }}</div>
+                    
+                    <div class="analysis-count mt-2">
+                        <i class="fas fa-chart-line me-1"></i>
+                        <span>{{ vehicle.analysis_count }} TCO analyses</span>
                     </div>
-                    <button class="btn btn-primary w-100 mt-3">
-                        <i class="fas fa-plus me-2"></i>Add to Comparison
-                    </button>
+                    
+                    <div class="last-analyzed mt-1 small text-muted">
+                        Last analyzed: {{ vehicle.last_analyzed.strftime('%b %d, %Y') }}
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-3">
+                        <a href="{{ url_for('vehicles.view_history', vehicle_id=vehicle.id) }}" class="btn btn-primary">
+                            <i class="fas fa-history me-2"></i>View Analysis History
+                        </a>
+                        <a href="{{ url_for('tco_calculator.user_data_input.prefill', vehicle_id=vehicle.id) }}" class="btn btn-outline-primary">
+                            <i class="fas fa-calculator me-2"></i>New Analysis
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- ICE Card Example -->
-        <div class="col-md-6 col-lg-4">
-            <div class="vehicle-card ice-card">
-                <div class="card-badge ice">Gas</div>
-                <div class="vehicle-icon-wrapper">
-                    <i class="fas fa-car vehicle-icon"></i>
-                    <i class="fas fa-gas-pump vehicle-icon-badge"></i>
-                </div>
-                <div class="card-body">
-                    <h3>Toyota Camry</h3>
-                    <div class="specs-grid">
-                        <div class="spec-item">
-                            <i class="fas fa-gas-pump"></i>
-                            <span>32 MPG</span>
-                        </div>
-                        <div class="spec-item">
-                            <i class="fas fa-road"></i>
-                            <span>450 mi</span>
-                        </div>
-                        <div class="spec-item">
-                            <i class="fas fa-tachometer-alt"></i>
-                            <span>5.7s 0-60</span>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary w-100 mt-3">
-                        <i class="fas fa-plus me-2"></i>Add to Comparison
-                    </button>
-                </div>
+        {% else %}
+        <div class="col-12 text-center py-5">
+            <div class="empty-state">
+                <i class="fas fa-car fa-4x mb-3 text-muted"></i>
+                <h3>No vehicles analyzed yet</h3>
+                <p class="text-muted">Start by analyzing a vehicle in the TCO Calculator</p>
+                <a href="{{ url_for('tco_calculator.user_data_input.landing') }}" class="btn btn-primary mt-3">
+                    <i class="fas fa-calculator me-2"></i>Go to TCO Calculator
+                </a>
             </div>
         </div>
-
-        <!-- Hybrid Card Example -->
-        <div class="col-md-6 col-lg-4">
-            <div class="vehicle-card hybrid-card">
-                <div class="card-badge ice">Hybrid</div>
-                <div class="vehicle-icon-wrapper">
-                    <i class="fas fa-car vehicle-icon"></i>
-                    <i class="fas fa-leaf vehicle-icon-badge"></i>
-                </div>
-                <div class="card-body">
-                    <h3>Toyota Prius</h3>
-                    <div class="specs-grid">
-                        <div class="spec-item">
-                            <i class="fas fa-gas-pump"></i>
-                            <span>58 MPG</span>
-                        </div>
-                        <div class="spec-item">
-                            <i class="fas fa-road"></i>
-                            <span>640 mi</span>
-                        </div>
-                        <div class="spec-item">
-                            <i class="fas fa-tachometer-alt"></i>
-                            <span>7.2s 0-60</span>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary w-100 mt-3">
-                        <i class="fas fa-plus me-2"></i>Add to Comparison
-                    </button>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 
-    <!-- Pagination -->
+    <!-- Pagination (only show if we have vehicles) -->
+    {% if vehicles and pagination.pages > 1 %}
     <div class="pagination-section text-center mt-5">
         <nav aria-label="Vehicle pages">
             <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1"><i class="fas fa-chevron-left"></i></a>
+                <li class="page-item {% if pagination.page == 1 %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('vehicles.index', page=pagination.prev_num) }}" tabindex="-1">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
                 </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#"><i class="fas fa-chevron-right"></i></a>
+                
+                {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        <li class="page-item {% if pagination.page == page_num %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('vehicles.index', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                <li class="page-item {% if pagination.page == pagination.pages %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('vehicles.index', page=pagination.next_num) }}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
                 </li>
             </ul>
         </nav>
     </div>
+    {% endif %}
 </div>
 {% endblock %}

@@ -1,8 +1,9 @@
 from flask import Blueprint, request, render_template
-from app.models import Vehicle
+from app.models import Vehicle, TCOComparison
 from app.services.business_logic.depreciation_service import DepreciationService
 from app.services.visualization.depreciation_visual import ChartService
 from app.database import db
+from flask_login import current_user
 
 depreciation_bp = Blueprint('depreciation', __name__, url_prefix='/depreciation')
 
@@ -107,6 +108,67 @@ def compare_depreciation():
             
             # Set vehicle2 to None for the template
             vehicle2 = None
+        
+        # After calculating results, save the comparison
+        comparison_record = TCOComparison(
+            # Vehicle 1 details
+            vehicle1_id=vehicle1.id,
+            vehicle1_make=vehicle1.make,
+            vehicle1_model=vehicle1.model,
+            vehicle1_year=vehicle1.year,
+            vehicle1_fuel_type=vehicle1.fuel_type,
+            vehicle1_type=vehicle1.type,
+            
+            # Analysis parameters
+            annual_mileage=annual_mileage,
+            ownership_years=years,
+            
+            # Is this a comparison?
+            is_comparison=is_comparison
+        )
+        
+        # Set vehicle 2 details if this is a comparison
+        if is_comparison:
+            comparison_record.vehicle2_id = vehicle2.id
+            comparison_record.vehicle2_make = vehicle2.make
+            comparison_record.vehicle2_model = vehicle2.model
+            comparison_record.vehicle2_year = vehicle2.year
+            comparison_record.vehicle2_fuel_type = vehicle2.fuel_type
+            comparison_record.vehicle2_type = vehicle2.type
+        
+        # Store the comparison data
+        comparison_record.set_comparison_data({
+            'vehicle1': {
+                'initial_cost': vehicle1_data.get('initial_cost', 0),
+                'depreciation_cost': vehicle1_data.get('depreciation_cost', 0),
+                'fuel_cost': vehicle1_data.get('fuel_cost', 0),
+                'maintenance_cost': vehicle1_data.get('maintenance_cost', 0),
+                'insurance_cost': vehicle1_data.get('insurance_cost', 0),
+                'total_cost': vehicle1_data.get('total_cost', 0),
+                'resale_value': vehicle1_data.get('resale_value', 0)
+            },
+            'vehicle2': {
+                'initial_cost': vehicle2_data.get('initial_cost', 0) if is_comparison else 0,
+                'depreciation_cost': vehicle2_data.get('depreciation_cost', 0) if is_comparison else 0,
+                'fuel_cost': vehicle2_data.get('fuel_cost', 0) if is_comparison else 0,
+                'maintenance_cost': vehicle2_data.get('maintenance_cost', 0) if is_comparison else 0,
+                'insurance_cost': vehicle2_data.get('insurance_cost', 0) if is_comparison else 0,
+                'total_cost': vehicle2_data.get('total_cost', 0) if is_comparison else 0,
+                'resale_value': vehicle2_data.get('resale_value', 0) if is_comparison else 0
+            } if is_comparison else {}
+        })
+        
+        # Store the charts
+        comparison_record.depreciation_chart = depreciation_chart_url
+        comparison_record.retention_chart = retention_chart_url
+        
+        # If user is logged in, associate with user
+        if current_user.is_authenticated:
+            comparison_record.user_id = current_user.id
+        
+        # Save to database
+        db.session.add(comparison_record)
+        db.session.commit()
         
         # Render results template
         return render_template(

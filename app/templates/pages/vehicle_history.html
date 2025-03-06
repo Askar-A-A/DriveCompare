@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}{{ vehicle.make }} {{ vehicle.model }} History - FuelCompare{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/vehicle_history.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="vehicle-history-container">
+    <!-- Header Section -->
+    <div class="vehicle-header mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1>{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})</h1>
+                <p class="lead">TCO Analysis History</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="{{ url_for('vehicles.index') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Vehicles
+                </a>
+                <a href="{{ url_for('tco_calculator.user_data_input.prefill', vehicle_id=vehicle.id) }}" class="btn btn-primary ms-2">
+                    <i class="fas fa-calculator me-2"></i>New Analysis
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicle Info Card -->
+    <div class="section-card mb-4">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="vehicle-icon-large {% if 'electric' in vehicle.fuel_type.lower() %}ev-bg{% elif 'hybrid' in vehicle.fuel_type.lower() %}hybrid-bg{% else %}ice-bg{% endif %}">
+                    <i class="fas fa-car"></i>
+                    {% if 'electric' in vehicle.fuel_type.lower() %}
+                        <i class="fas fa-bolt icon-badge"></i>
+                    {% elif 'hybrid' in vehicle.fuel_type.lower() %}
+                        <i class="fas fa-leaf icon-badge"></i>
+                    {% else %}
+                        <i class="fas fa-gas-pump icon-badge"></i>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-8">
+                <h3>Vehicle Details</h3>
+                <div class="vehicle-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Make:</span>
+                        <span class="detail-value">{{ vehicle.make }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Model:</span>
+                        <span class="detail-value">{{ vehicle.model }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Year:</span>
+                        <span class="detail-value">{{ vehicle.year }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Fuel Type:</span>
+                        <span class="detail-value">{{ vehicle.fuel_type }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Vehicle Type:</span>
+                        <span class="detail-value">{{ vehicle.type }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Total Analyses:</span>
+                        <span class="detail-value">{{ comparisons|length }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analysis History -->
+    <div class="section-card">
+        <h3><i class="fas fa-history me-2"></i>Analysis History</h3>
+        
+        {% if comparisons %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Analysis Type</th>
+                        <th>Compared With</th>
+                        <th>Parameters</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for comparison in comparisons %}
+                    <tr>
+                        <td>{{ comparison.created_at.strftime('%b %d, %Y') }}</td>
+                        <td>
+                            {% if comparison.is_comparison %}
+                                <span class="badge bg-primary">Comparison</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Single Analysis</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if comparison.is_comparison %}
+                                {% if comparison.vehicle1_id == vehicle.id %}
+                                    {{ comparison.vehicle2_make }} {{ comparison.vehicle2_model }} ({{ comparison.vehicle2_year }})
+                                {% else %}
+                                    {{ comparison.vehicle1_make }} {{ comparison.vehicle1_model }} ({{ comparison.vehicle1_year }})
+                                {% endif %}
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark">{{ comparison.annual_mileage }} miles/year</span>
+                            <span class="badge bg-light text-dark">{{ comparison.ownership_years }} years</span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('vehicles.view_analysis', vehicle_id=vehicle.id, comparison_id=comparison.id) }}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-eye me-1"></i>View
+                            </a>
+                            <a href="{{ url_for('tco_calculator.user_data_input.recreate', comparison_id=comparison.id) }}" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-redo me-1"></i>Recreate
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state py-5 text-center">
+            <i class="fas fa-chart-line fa-4x mb-3 text-muted"></i>
+            <h4>No analyses found</h4>
+            <p class="text-muted">This vehicle hasn't been analyzed yet</p>
+            <a href="{{ url_for('tco_calculator.user_data_input.prefill', vehicle_id=vehicle.id) }}" class="btn btn-primary mt-3">
+                <i class="fas fa-calculator me-2"></i>Analyze This Vehicle
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

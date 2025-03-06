@@ -2,6 +2,7 @@ from flask import Flask
 from config import Config
 from app.database import db
 import app.models 
+from flask_login import LoginManager
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -9,6 +10,16 @@ def create_app(config_class=Config):
     
     # Initialize database
     db.init_app(app)
+    
+    # Initialize Flask-Login
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+    login_manager.login_view = 'auth.login'  # This will be the login route when implemented
+    
+    @login_manager.user_loader
+    def load_user(user_id):
+        from app.models import User
+        return User.query.get(int(user_id))
     
     register_blueprints(app)
     

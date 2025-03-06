@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+
+{% block title %}TCO Analysis Details - FuelCompare{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/vehicle_analysis.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="analysis-container">
+    <!-- Header Section -->
+    <div class="analysis-header mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1>TCO Analysis Details</h1>
+                <p class="lead">
+                    {% if comparison.is_comparison %}
+                        Comparison between {{ comparison.vehicle1_make }} {{ comparison.vehicle1_model }} and {{ comparison.vehicle2_make }} {{ comparison.vehicle2_model }}
+                    {% else %}
+                        Analysis of {{ comparison.vehicle1_make }} {{ comparison.vehicle1_model }}
+                    {% endif %}
+                </p>
+                <div class="analysis-meta">
+                    <span class="badge bg-secondary">{{ comparison.created_at.strftime('%b %d, %Y') }}</span>
+                    <span class="badge bg-light text-dark">{{ comparison.annual_mileage }} miles/year</span>
+                    <span class="badge bg-light text-dark">{{ comparison.ownership_years }} years</span>
+                </div>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="{{ url_for('vehicles.view_history', vehicle_id=vehicle.id) }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to History
+                </a>
+                <a href="{{ url_for('tco_calculator.user_data_input.recreate', comparison_id=comparison.id) }}" class="btn btn-primary ms-2">
+                    <i class="fas fa-redo me-2"></i>Recreate
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="section-card mb-4">
+        <h3><i class="fas fa-chart-line me-2"></i>Analysis Charts</h3>
+        
+        <div class="row mt-4">
+            <div class="col-md-6 mb-4">
+                <div class="chart-container">
+                    <h4 class="text-center mb-3">Depreciation Over Time</h4>
+                    <img src="{{ comparison.depreciation_chart }}" alt="Depreciation Chart" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="chart-container">
+                    <h4 class="text-center mb-3">Value Retention</h4>
+                    <img src="{{ comparison.retention_chart }}" alt="Retention Chart" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="section-card">
+        <h3><i class="fas fa-calculator me-2"></i>TCO Results</h3>
+        
+        {% set data = comparison.get_comparison_data() %}
+        
+        <div class="row mt-4">
+            <!-- Vehicle 1 Results -->
+            <div class="col-md-{% if comparison.is_comparison %}6{% else %}12{% endif %} mb-4">
+                <div class="vehicle-result-card {% if 'electric' in comparison.vehicle1_fuel_type.lower() %}ev-card{% elif 'hybrid' in comparison.vehicle1_fuel_type.lower() %}hybrid-card{% else %}ice-card{% endif %}">
+                    <h4>{{ comparison.vehicle1_make }} {{ comparison.vehicle1_model }} ({{ comparison.vehicle1_year }})</h4>
+                    
+                    <div class="cost-summary">
+                        <div class="total-cost">
+                            <span class="cost-label">Total Cost of Ownership:</span>
+                            <span class="cost-value">
+                                {% if data.get('vehicle1', {}).get('total_cost') is not none %}
+                                    ${{ "{:,.0f}".format(data['vehicle1']['total_cost']) }}
+                                {% else %}
+                                    $0
+                                {% endif %}
+                            </span>
+                        </div>
+                        
+                        <div class="cost-breakdown mt-3">
+                            <div class="cost-item">
+                                <span class="item-label">Initial Purchase:</span>
+                                <span class="item-value">
+                                    {% if data.get('vehicle1', {}).get('initial_cost') is not none %}
+                                        ${{ "{:,.0f}".format(data['vehicle1']['initial_cost']) }}
+                                    {% else %}
+                                        $0
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="cost-item">
+                                <span class="item-label">Depreciation:</span>
+                                <span class="item-value">
+                                    {% if data.get('vehicle1', {}).get('depreciation_cost') is not none %}
+                                        ${{ "{:,.0f}".format(data['vehicle1']['depreciation_cost']) }}
+                                    {% else %}
+                                        $0
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="cost-item">
+                                <span class="item-label">Fuel:</span>
+                                <span class="item-value">
+                                    {% if data.get('vehicle1', {}).get('fuel_cost') is not none %}
+                                        ${{ "{:,.0f}".format(data['vehicle1']['fuel_cost']) }}
+                                    {% else %}
+                                        $0
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="cost-item">
+                                <span class="item-label">Maintenance:</span>
+                                <span class="item-value">
+                                    {% if data.get('vehicle1', {}).get('maintenance_cost') is not none %}
+                                        ${{ "{:,.0f}".format(data['vehicle1']['maintenance_cost']) }}
+                                    {% else %}
+                                        $0
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="cost-item">
+                                <span class="item-label">Insurance:</span>
+                                <span class="item-value">
+                                    {% if data.get('vehicle1', {}).get('insurance_cost') is not none %}
+                                        ${{ "{:,.0f}".format(data['vehicle1']['insurance_cost']) }}
+                                    {% else %}
+                                        $0
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="resale-value mt-3">
+                            <span class="value-label">Resale Value after {{ comparison.ownership_years }} years:</span>
+                            <span class="value-amount">
+                                {% if data.get('vehicle1', {}).get('resale_value') is not none %}
+                                    ${{ "{:,.0f}".format(data['vehicle1']['resale_value']) }}
+                                {% else %}
+                                    $0
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Vehicle 2 Results (if comparison) -->
+            {% if comparison.is_comparison %}
+            <div class="col-md-6 mb-4">
+                <div class="vehicle-result-card {% if 'electric' in comparison.vehicle2_fuel_type.lower() %}ev-card{% elif 'hybrid' in comparison.vehicle2_fuel_type.lower() %}hybrid-card{% else %}ice-card{% endif %}">
+                    <h4>{{ comparison.vehicle2_make }} {{ comparison.vehicle2_model }} ({{ comparison.vehicle2_year }})</h4>
+                    
+                    <div class="cost-summary">
+                        <div class="total-cost">
+                            <span class="cost-label">Total Cost of Ownership:</span>
+                            <span class="cost-value">
+                                {% if data.get('vehicle2', {}).get('total_cost') is not none %}
+                                    ${{ "{:,.0f}".format(data['vehicle2']['total_cost']) }}
+                                {% else %}
+                                    $0
+                                {% endif %}
+                            </span>
+                        </div>
+                        
+                        <div class="cost-breakdown mt-3">
+                            <div class="cost-item">
+                                <span class="item-label">Initial Purchase:</span>
+                                <span class="item-value">
+                                    {% if data.get('vehicle2', {}).get('initial_cost') is not none %}
+                                        ${{ "{:,.0f}".format(data['vehicle2']['initial_cost']) }}
+                                    {% else %}
+                                        $0
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="cost-item">
+                                <span class="item-label">Depreciation:</span>
+                                <span class="item-value">
+                                    {% if data.get('vehicle2', {}).get('depreciation_cost') is not none %}
+                                        ${{ "{:,.0f}".format(data['vehicle2']['depreciation_cost']) }}
+                                    {% else %}
+                                        $0
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="cost-item">
+                                <span class="item-label">Fuel:</span>
+                                <span class="item-value">
+                                    {% if data.get('vehicle2', {}).get('fuel_cost') is not none %}
+                                        ${{ "{:,.0f}".format(data['vehicle2']['fuel_cost']) }}
+                                    {% else %}
+                                        $0
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="cost-item">
+                                <span class="item-label">Maintenance:</span>
+                                <span class="item-value">
+                                    {% if data.get('vehicle2', {}).get('maintenance_cost') is not none %}
+                                        ${{ "{:,.0f}".format(data['vehicle2']['maintenance_cost']) }}
+                                    {% else %}
+                                        $0
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="cost-item">
+                                <span class="item-label">Insurance:</span>
+                                <span class="item-value">
+                                    {% if data.get('vehicle2', {}).get('insurance_cost') is not none %}
+                                        ${{ "{:,.0f}".format(data['vehicle2']['insurance_cost']) }}
+                                    {% else %}
+                                        $0
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="resale-value mt-3">
+                            <span class="value-label">Resale Value after {{ comparison.ownership_years }} years:</span>
+                            <span class="value-amount">
+                                {% if data.get('vehicle2', {}).get('resale_value') is not none %}
+                                    ${{ "{:,.0f}".format(data['vehicle2']['resale_value']) }}
+                                {% else %}
+                                    $0
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Comparison Summary (if comparison) -->
+        {% if comparison.is_comparison %}
+        <div class="comparison-summary mt-4">
+            <h4 class="text-center mb-3">Comparison Summary</h4>
+            
+            {% if data.get('vehicle1', {}).get('total_cost') is not none and data.get('vehicle2', {}).get('total_cost') is not none %}
+                {% set diff = data['vehicle1']['total_cost'] - data['vehicle2']['total_cost'] %}
+                {% set cheaper = 'vehicle2' if diff > 0 else 'vehicle1' %}
+                {% set cheaper_name = comparison.vehicle2_make + ' ' + comparison.vehicle2_model if diff > 0 else comparison.vehicle1_make + ' ' + comparison.vehicle1_model %}
+                {% set savings = diff|abs %}
+                
+                <div class="alert {% if diff > 0 %}alert-success{% else %}alert-info{% endif %} text-center">
+                    <h5>
+                        The {{ cheaper_name }} is cheaper by <strong>${{ "{:,.0f}".format(savings) }}</strong> over {{ comparison.ownership_years }} years
+                    </h5>
+                    <p>That's about <strong>${{ "{:,.0f}".format(savings / comparison.ownership_years / 12) }}</strong> per month</p>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="comparison-card">
+                            <h5>{{ comparison.vehicle1_make }} {{ comparison.vehicle1_model }} Advantages</h5>
+                            <ul class="advantage-list">
+                                {% if data.get('vehicle1', {}).get('initial_cost') is not none and data.get('vehicle2', {}).get('initial_cost') is not none and data['vehicle1']['initial_cost'] < data['vehicle2']['initial_cost'] %}
+                                <li>Lower initial purchase price (saves ${{ "{:,.0f}".format(data['vehicle2']['initial_cost'] - data['vehicle1']['initial_cost']) }})</li>
+                                {% endif %}
+                                
+                                {% if data.get('vehicle1', {}).get('fuel_cost') is not none and data.get('vehicle2', {}).get('fuel_cost') is not none and data['vehicle1']['fuel_cost'] < data['vehicle2']['fuel_cost'] %}
+                                <li>Lower fuel costs (saves ${{ "{:,.0f}".format(data['vehicle2']['fuel_cost'] - data['vehicle1']['fuel_cost']) }})</li>
+                                {% endif %}
+                                
+                                {% if data.get('vehicle1', {}).get('maintenance_cost') is not none and data.get('vehicle2', {}).get('maintenance_cost') is not none and data['vehicle1']['maintenance_cost'] < data['vehicle2']['maintenance_cost'] %}
+                                <li>Lower maintenance costs (saves ${{ "{:,.0f}".format(data['vehicle2']['maintenance_cost'] - data['vehicle1']['maintenance_cost']) }})</li>
+                                {% endif %}
+                                
+                                {% if data.get('vehicle1', {}).get('depreciation_cost') is not none and data.get('vehicle2', {}).get('depreciation_cost') is not none and data['vehicle1']['depreciation_cost'] < data['vehicle2']['depreciation_cost'] %}
+                                <li>Lower depreciation (saves ${{ "{:,.0f}".format(data['vehicle2']['depreciation_cost'] - data['vehicle1']['depreciation_cost']) }})</li>
+                                {% endif %}
+                                
+                                {% if data.get('vehicle1', {}).get('resale_value') is not none and data.get('vehicle2', {}).get('resale_value') is not none and data['vehicle1']['resale_value'] > data['vehicle2']['resale_value'] %}
+                                <li>Higher resale value (worth ${{ "{:,.0f}".format(data['vehicle1']['resale_value'] - data['vehicle2']['resale_value']) }} more)</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="comparison-card">
+                            <h5>{{ comparison.vehicle2_make }} {{ comparison.vehicle2_model }} Advantages</h5>
+                            <ul class="advantage-list">
+                                {% if data.get('vehicle1', {}).get('initial_cost') is not none and data.get('vehicle2', {}).get('initial_cost') is not none and data['vehicle2']['initial_cost'] < data['vehicle1']['initial_cost'] %}
+                                <li>Lower initial purchase price (saves ${{ "{:,.0f}".format(data['vehicle1']['initial_cost'] - data['vehicle2']['initial_cost']) }})</li>
+                                {% endif %}
+                                
+                                {% if data.get('vehicle1', {}).get('fuel_cost') is not none and data.get('vehicle2', {}).get('fuel_cost') is not none and data['vehicle2']['fuel_cost'] < data['vehicle1']['fuel_cost'] %}
+                                <li>Lower fuel costs (saves ${{ "{:,.0f}".format(data['vehicle1']['fuel_cost'] - data['vehicle2']['fuel_cost']) }})</li>
+                                {% endif %}
+                                
+                                {% if data.get('vehicle1', {}).get('maintenance_cost') is not none and data.get('vehicle2', {}).get('maintenance_cost') is not none and data['vehicle2']['maintenance_cost'] < data['vehicle1']['maintenance_cost'] %}
+                                <li>Lower maintenance costs (saves ${{ "{:,.0f}".format(data['vehicle1']['maintenance_cost'] - data['vehicle2']['maintenance_cost']) }})</li>
+                                {% endif %}
+                                
+                                {% if data.get('vehicle1', {}).get('depreciation_cost') is not none and data.get('vehicle2', {}).get('depreciation_cost') is not none and data['vehicle2']['depreciation_cost'] < data['vehicle1']['depreciation_cost'] %}
+                                <li>Lower depreciation (saves ${{ "{:,.0f}".format(data['vehicle1']['depreciation_cost'] - data['vehicle2']['depreciation_cost']) }})</li>
+                                {% endif %}
+                                
+                                {% if data.get('vehicle1', {}).get('resale_value') is not none and data.get('vehicle2', {}).get('resale_value') is not none and data['vehicle2']['resale_value'] > data['vehicle1']['resale_value'] %}
+                                <li>Higher resale value (worth ${{ "{:,.0f}".format(data['vehicle2']['resale_value'] - data['vehicle1']['resale_value']) }} more)</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-warning text-center">
+                    <h5>Comparison data is incomplete</h5>
+                    <p>Some cost data is missing for one or both vehicles.</p>
+                </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
