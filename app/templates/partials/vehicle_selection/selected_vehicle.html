@@ -1,0 +1,24 @@
+<div class="selected-vehicle mb-3" id="vehicle-{{ index }}">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">{{ year }} {{ make }} {{ model }}</h5>
+            <button type="button" class="btn btn-sm btn-outline-danger"
+                    hx-get="{{ url_for('tco_calculator.user_data_input.remove_vehicle') }}?index={{ index }}"
+                    hx-target="#vehicle-{{ index }}"
+                    hx-swap="outerHTML">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="card-body">
+            <p class="mb-1"><strong>Fuel Type:</strong> {{ fuel_type }}</p>
+            <p class="mb-0"><strong>Vehicle Type:</strong> {{ vehicle_type }}</p>
+        </div>
+        <!-- Hidden inputs to store vehicle data -->
+        <input type="hidden" name="vehicle_indices" value="{{ index }}">
+        <input type="hidden" name="year_{{ index }}" value="{{ year }}">
+        <input type="hidden" name="make_{{ index }}" value="{{ make }}">
+        <input type="hidden" name="model_{{ index }}" value="{{ model }}">
+        <input type="hidden" name="fuelType_{{ index }}" value="{{ fuel_type }}">
+        <input type="hidden" name="type_{{ index }}" value="{{ vehicle_type }}">
+    </div>
+</div>

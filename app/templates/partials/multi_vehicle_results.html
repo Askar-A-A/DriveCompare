@@ -1,0 +1,75 @@
+<div class="results-container">
+    <h2 class="text-center mb-4">Total Cost of Ownership Analysis</h2>
+    
+    <!-- Charts Section -->
+    <div class="section-card mb-4">
+        <h3><i class="fas fa-chart-line me-2"></i>Analysis Charts</h3>
+        
+        <div class="row mt-4">
+            <div class="col-md-6 mb-4">
+                <div class="chart-container">
+                    <h4 class="text-center mb-3">Depreciation Over Time</h4>
+                    <img src="{{ depreciation_chart_url }}" alt="Depreciation Chart" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="chart-container">
+                    <h4 class="text-center mb-3">Value Retention</h4>
+                    <img src="{{ retention_chart_url }}" alt="Retention Chart" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Results Table -->
+    <div class="section-card">
+        <h3><i class="fas fa-table me-2"></i>Comparison Results</h3>
+        
+        <div class="table-responsive mt-4">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Vehicle</th>
+                        <th>Initial Price</th>
+                        <th>Depreciation</th>
+                        <th>Resale Value ({{ years }} years)</th>
+                        <th>% Value Retained</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in range(vehicle_count) %}
+                        <tr>
+                            <td>{{ vehicles[i].year }} {{ vehicles[i].make }} {{ vehicles[i].model }}</td>
+                            <td>${{ "{:,.0f}".format(vehicle_data[i]['initial_price']) }}</td>
+                            <td>${{ "{:,.0f}".format(vehicle_data[i]['total_depreciation']) }}</td>
+                            <td>${{ "{:,.0f}".format(vehicle_data[i]['final_value']) }}</td>
+                            <td>{{ "{:.1f}%".format(100 - vehicle_data[i]['depreciation_percentage']) }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Analysis Details -->
+        <div class="mt-4">
+            <h4>Analysis Details</h4>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Annual Mileage
+                    <span class="badge bg-primary rounded-pill">{{ "{:,}".format(annual_mileage) }} miles</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Ownership Period
+                    <span class="badge bg-primary rounded-pill">{{ years }} years</span>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Save Analysis Button (if user is logged in) -->
+        <div class="text-center mt-4">
+            <a href="#" class="btn btn-success">
+                <i class="fas fa-save me-2"></i>Save This Analysis
+            </a>
+        </div>
+    </div>
+</div> 

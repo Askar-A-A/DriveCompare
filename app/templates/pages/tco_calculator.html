@@ -14,192 +14,195 @@
         <p class="lead">Compare the total cost of ownership between vehicles</p>
     </div>
 
-    <div class="comparison-form">
-        <div class="row g-4">
-            <!-- Vehicle Selection Section -->
-            <div class="col-12">
-                <div class="section-card">
-                    <h3><i class="fas fa-car me-2"></i>Vehicle Selection</h3>
-                    <div class="row g-3">
-                        <!-- Vehicle 1 -->
-                        <div class="col-md-6">
-                            <div class="vehicle-selector">
-                                <h4>Primary Vehicle</h4>
-                                <!-- Year Selection -->
-                                <div class="mb-3">
-                                    <label class="form-label">Year</label>
-                                    <select class="form-select" 
-                                            id="vehicle1Year"
-                                            name="year1"
-                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_makes') }}"
-                                            hx-target="#vehicle1Make"
-                                            hx-trigger="change"
-                                            hx-include="[name='year1']"
-                                            hx-swap="innerHTML">
-                                        <option value="">Select Year</option>
-                                        {% for year in years %}
-                                            <option value="{{ year[0] }}">{{ year[0] }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <!-- Make Selection -->
-                                <div class="mb-3">
-                                    <label class="form-label">Make</label>
-                                    <select class="form-select" 
-                                            id="vehicle1Make"
-                                            name="make1"
-                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_models') }}"
-                                            hx-target="#vehicle1Model"
-                                            hx-trigger="change"
-                                            hx-include="[name='year1'],[name='make1']"
-                                            hx-swap="innerHTML">
-                                        <option value="">Select Make</option>
-                                    </select>
-                                </div>
-                                <!-- Model Selection -->
-                                <div class="mb-3">
-                                    <label class="form-label">Model</label>
-                                    <select class="form-select" 
-                                            id="vehicle1Model"
-                                            name="model1"
-                                            hx-get="{{ url_for('tco_calculator.user_data_input.get_fuel_types') }}"
-                                            hx-target="#vehicle1FuelType"
-                                            hx-trigger="change"
-                                            hx-include="[name='year1'],[name='make1'],[name='model1']"
-                                            hx-swap="innerHTML">
-                                        <option value="">Select Model</option>
-                                    </select>
-                                </div>
-                                <!-- Fuel Type Selection -->
-                                <div class="mb-3">
-                                    <label class="form-label">Fuel Type</label>
-                                    <select class="form-select" 
-                                            id="vehicle1FuelType"
-                                            name="fuelType1">
-                                        <option value="">Select Fuel Type</option>
-                                    </select>
-                                </div>
-                                <!-- Vehicle Type (Hidden, will be determined automatically) -->
-                                <input type="hidden" id="vehicle1Type" name="type1" value="Auto">
-                            </div>
-                        </div>
-
-                        <!-- Comparison Toggle Area -->
-                        <div class="col-md-6" id="comparisonToggleArea">
-                            <!-- Initially show the "Compare with Another Vehicle" button -->
-                            <div class="d-flex justify-content-center align-items-center h-100">
-                                <button type="button" class="btn btn-outline-primary btn-lg"
-                                        hx-get="{{ url_for('tco_calculator.user_data_input.toggle_comparison', show='true') }}"
-                                        hx-target="#comparisonToggleArea"
-                                        hx-swap="innerHTML">
-                                    <i class="fas fa-plus-circle me-2"></i>Compare with Another Vehicle
-                                </button>
-                            </div>
-                        </div>
+    <!-- Vehicle Form Section -->
+    <div class="section-card mb-4" id="vehicleFormSection">
+        <h3><i class="fas fa-car me-2"></i>Vehicle Selection</h3>
+        <form id="vehicleForm" 
+              hx-post="{{ url_for('tco_calculator.user_data_input.add_vehicle') }}"
+              hx-target="#selectedVehicles"
+              hx-swap="beforeend"
+              hx-indicator=".htmx-indicator">
+            <div class="row g-3">
+                <!-- Year Selection -->
+                <div class="col-md-3">
+                    <label class="form-label">Year</label>
+                    <select class="form-select" 
+                            id="vehicleYear"
+                            name="year"
+                            hx-get="{{ url_for('tco_calculator.user_data_input.get_makes') }}"
+                            hx-target="#vehicleMake"
+                            hx-trigger="change"
+                            hx-include="[name='year']"
+                            hx-swap="innerHTML">
+                        <option value="">Select Year</option>
+                        {% for year in years %}
+                            <option value="{{ year[0] }}">{{ year[0] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <!-- Make Selection -->
+                <div class="col-md-3">
+                    <label class="form-label">Make</label>
+                    <select class="form-select" 
+                            id="vehicleMake"
+                            name="make"
+                            hx-get="{{ url_for('tco_calculator.user_data_input.get_models') }}"
+                            hx-target="#vehicleModel"
+                            hx-trigger="change"
+                            hx-include="[name='year'],[name='make']"
+                            hx-swap="innerHTML">
+                        <option value="">Select Make</option>
+                    </select>
+                </div>
+                <!-- Model Selection -->
+                <div class="col-md-3">
+                    <label class="form-label">Model</label>
+                    <select class="form-select" 
+                            id="vehicleModel"
+                            name="model"
+                            hx-get="{{ url_for('tco_calculator.user_data_input.get_fuel_types') }}"
+                            hx-target="#vehicleFuelType"
+                            hx-trigger="change"
+                            hx-include="[name='year'],[name='make'],[name='model']"
+                            hx-swap="innerHTML">
+                        <option value="">Select Model</option>
+                    </select>
+                </div>
+                <!-- Fuel Type Selection -->
+                <div class="col-md-3">
+                    <label class="form-label">Fuel Type</label>
+                    <select class="form-select" 
+                            id="vehicleFuelType"
+                            name="fuelType">
+                        <option value="">Select Fuel Type</option>
+                    </select>
+                </div>
+                <!-- Vehicle Type (Hidden, will be determined automatically) -->
+                <input type="hidden" id="vehicleType" name="type" value="Auto">
+                
+                <!-- Add Vehicle Button -->
+                <div class="col-12 text-center mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus-circle me-2"></i>Add Vehicle to Comparison
+                    </button>
+                    <div class="htmx-indicator spinner-border text-primary mt-3" role="status" style="display:none">
+                        <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
             </div>
+        </form>
+    </div>
 
-            <!-- Driving Habits Section -->
-            <div class="col-12">
-                <div class="section-card">
-                    <h3><i class="fas fa-route me-2"></i>Driving Habits</h3>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Annual Mileage</label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" id="annualMiles" name="annualMiles" value="12000" min="1000" max="50000" step="1000">
-                                <span class="input-group-text">miles</span>
-                            </div>
-                            <small class="form-text text-muted">Enter your expected annual mileage</small>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Driving Type</label>
-                            <select class="form-select" id="drivingType">
-                                <option value="mixed">Mixed</option>
-                                <option value="city">City</option>
-                                <option value="highway">Highway</option>
-                            </select>
-                        </div>
+    <!-- Selected Vehicles Section -->
+    <div class="section-card mb-4">
+        <h3><i class="fas fa-list me-2"></i>Selected Vehicles</h3>
+        <div id="selectedVehicles" class="selected-vehicles-container">
+            <!-- Vehicles will be added here dynamically -->
+            <div class="text-center text-muted py-4" id="noVehiclesMessage">
+                <i class="fas fa-car fa-3x mb-3"></i>
+                <p>No vehicles added yet. Use the form above to add vehicles to compare.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Driving Habits Section -->
+    <div class="col-12">
+        <div class="section-card">
+            <h3><i class="fas fa-route me-2"></i>Driving Habits</h3>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Annual Mileage</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="annualMiles" name="annualMiles" value="12000" min="1000" max="50000" step="1000">
+                        <span class="input-group-text">miles</span>
+                    </div>
+                    <small class="form-text text-muted">Enter your expected annual mileage</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Driving Type</label>
+                    <select class="form-select" id="drivingType">
+                        <option value="mixed">Mixed</option>
+                        <option value="city">City</option>
+                        <option value="highway">Highway</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Energy Costs Section -->
+    <div class="col-12 mt-4">
+        <div class="section-card">
+            <h3><i class="fas fa-bolt me-2"></i>Energy Costs</h3>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Gas Price (per gallon)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control" id="gasPrice">
+                        <button class="btn btn-outline-secondary" type="button">Auto-fill</button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Electricity Cost (per kWh)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control" id="electricityRate">
+                        <select class="form-select" style="max-width: 140px;">
+                            <option value="home">Home</option>
+                            <option value="solar">Solar</option>
+                            <option value="public">Public Charger</option>
+                        </select>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Energy Costs Section -->
-            <div class="col-12">
-                <div class="section-card">
-                    <h3><i class="fas fa-bolt me-2"></i>Energy Costs</h3>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Gas Price (per gallon)</label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input type="number" class="form-control" id="gasPrice">
-                                <button class="btn btn-outline-secondary" type="button">Auto-fill</button>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Electricity Cost (per kWh)</label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input type="number" class="form-control" id="electricityRate">
-                                <select class="form-select" style="max-width: 140px;">
-                                    <option value="home">Home</option>
-                                    <option value="solar">Solar</option>
-                                    <option value="public">Public Charger</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Ownership Period Section -->
+    <div class="col-12 mt-4">
+        <div class="section-card">
+            <h3><i class="fas fa-calendar me-2"></i>Ownership Period</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">Years of Ownership</label>
+                    <input type="number" class="form-control" id="ownershipYears" name="ownershipYears" value="5" min="1" max="15">
+                    <small class="form-text text-muted">Enter the number of years you plan to own the vehicle</small>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Ownership Period Section -->
-            <div class="col-12">
-                <div class="section-card">
-                    <h3><i class="fas fa-calendar me-2"></i>Ownership Period</h3>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label">Years of Ownership</label>
-                            <input type="number" class="form-control" id="ownershipYears" name="ownershipYears" value="5" min="1" max="15">
-                            <small class="form-text text-muted">Enter the number of years you plan to own the vehicle</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Calculate Button -->
-            <div class="col-12 text-center">
-                <button class="btn btn-primary btn-lg calculate-btn"
-                        id="calculateButton"
-                        hx-post="{{ url_for('tco_calculator.depreciation.compare_depreciation') }}"
-                        hx-include="[name='year1'],[name='make1'],[name='model1'],[name='fuelType1'],[name='type1'],[name='year2'],[name='make2'],[name='model2'],[name='fuelType2'],[name='type2'],#annualMiles,#ownershipYears"
-                        hx-target=".comparison-results"
-                        hx-swap="innerHTML"
-                        hx-indicator=".htmx-indicator">
-                    <i class="fas fa-calculator me-2"></i><span id="calculateButtonText">Calculate Cost of Ownership</span>
-                </button>
-                <div class="htmx-indicator spinner-border text-primary mt-3" role="status" style="display:none">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
+    <!-- Calculate Button -->
+    <div class="col-12 text-center mt-4">
+        <button class="btn btn-primary btn-lg calculate-btn"
+                id="calculateButton"
+                hx-post="{{ url_for('tco_calculator.depreciation.compare_multiple_vehicles') }}"
+                hx-include="#selectedVehicles input[type=hidden],#annualMiles,#ownershipYears"
+                hx-target=".comparison-results"
+                hx-swap="innerHTML"
+                hx-indicator=".htmx-indicator-calculate">
+            <i class="fas fa-calculator me-2"></i>Calculate Cost of Ownership
+        </button>
+        <div class="htmx-indicator-calculate spinner-border text-primary mt-3" role="status" style="display:none">
+            <span class="visually-hidden">Loading...</span>
         </div>
     </div>
 
     <!-- Results Section (Initially Empty) -->
     <div class="comparison-results mt-4">
         <!-- Results will be dynamically populated by HTMX -->
-        {% if depreciation_chart_url %}
-            <img src="{{ depreciation_chart_url }}" alt="Depreciation Chart" class="img-fluid">
-        {% else %}
-            <div class="text-center text-muted py-5">
-                <i class="fas fa-chart-line fa-3x mb-3"></i>
-                <p>Chart will be generated on the server</p>
-            </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
+<script>
+    // This small script is necessary to hide the "No vehicles" message when vehicles are added
+    document.body.addEventListener('htmx:afterSwap', function(evt) {
+        if (evt.detail.target.id === 'selectedVehicles' && evt.detail.target.children.length > 1) {
+            document.getElementById('noVehiclesMessage').style.display = 'none';
+        }
+    });
+</script>
 {% endblock %}

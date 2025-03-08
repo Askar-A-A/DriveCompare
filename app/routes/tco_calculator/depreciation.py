@@ -4,159 +4,129 @@ from app.services.business_logic.depreciation_service import DepreciationService
 from app.services.visualization.depreciation_visual import ChartService
 from app.database import db
 from flask_login import current_user
+import re
 
 depreciation_bp = Blueprint('depreciation', __name__, url_prefix='/depreciation')
 
-@depreciation_bp.route('/compare-depreciation', methods=['POST'])
-def compare_depreciation():
-    """Compare vehicle depreciation based on form data and return HTML results"""
+@depreciation_bp.route('/compare-multiple-vehicles', methods=['POST'])
+def compare_multiple_vehicles():
+    """Compare multiple vehicles based on form data and return HTML results"""
     try:
-        make1 = request.form.get('make1')
-        type1 = request.form.get('type1')
-        year1 = request.form.get('year1')
-        model1 = request.form.get('model1')
-        fuel_type1 = request.form.get('fuelType1')
-        
         # Get user inputs for mileage and ownership period
         annual_mileage = int(request.form.get('annualMiles', 12000))
         years = int(request.form.get('ownershipYears', 5))
         
-        # Debug the inputs
-        print(f"Form data: {request.form}")
-        print(f"Annual mileage: {annual_mileage}, Years: {years}")
+        # Get the indices of all vehicles
+        vehicle_indices = request.form.getlist('vehicle_indices')
         
-        # Validate primary vehicle inputs
-        if not all([make1, year1, model1, fuel_type1]):
-            return "<div class='alert alert-danger'>Please select the primary vehicle completely</div>"
+        if not vehicle_indices:
+            return "<div class='alert alert-danger'>Please add at least one vehicle to compare</div>"
         
-        # Create vehicle dictionary for the primary vehicle
-        vehicle1_data = {
-            'make': make1,
-            'type': type1,
-            'year': int(year1),
-            'model': model1,
-            'fuel_type': fuel_type1
+        # Process each vehicle
+        vehicles = []
+        vehicle_data = []
+        vehicle_objects = []
+        
+        for index in vehicle_indices:
+            make = request.form.get(f'make_{index}')
+            vehicle_type = request.form.get(f'type_{index}')
+            year = request.form.get(f'year_{index}')
+            model = request.form.get(f'model_{index}')
+            fuel_type = request.form.get(f'fuelType_{index}')
+            
+            if not all([make, year, model, fuel_type]):
+                continue
+            
+            # Create vehicle dictionary
+            vehicle_dict = {
+                'make': make,
+                'type': vehicle_type,
+                'year': int(year),
+                'model': model,
+                'fuel_type': fuel_type
+            }
+            
+            # Get the vehicle object
+            vehicle_obj = DepreciationService.get_or_create_vehicle(
+                make, model, int(year), fuel_type, vehicle_type
+            )
+            
+            vehicles.append(vehicle_dict)
+            vehicle_objects.append(vehicle_obj)
+        
+        if len(vehicles) < 1:
+            return "<div class='alert alert-danger'>No valid vehicles found</div>"
+        
+        # Calculate depreciation for each vehicle
+        for vehicle in vehicles:
+            depreciation = DepreciationService.calculate_depreciation(
+                vehicle,
+                years=years,
+                annual_mileage=annual_mileage
+            )
+            vehicle_data.append(depreciation)
+        
+        # Generate comparison data structure
+        comparison_data = {
+            'vehicles': vehicle_data,
+            'count': len(vehicles)
         }
         
-        # Check if we have a second vehicle for comparison
-        make2 = request.form.get('make2')
-        type2 = request.form.get('type2')
-        year2 = request.form.get('year2')
-        model2 = request.form.get('model2')
-        fuel_type2 = request.form.get('fuelType2')
-        
-        is_comparison = all([make2, year2, model2, fuel_type2])
-        
-        # Get the primary vehicle object
-        vehicle1 = DepreciationService.get_or_create_vehicle(
-            make1, model1, int(year1), fuel_type1, type1
+        # Generate multi-vehicle chart
+        depreciation_chart_url = ChartService.generate_multi_vehicle_chart(
+            vehicle_objects, vehicle_data
         )
         
-        if is_comparison:
-            # Create vehicle dictionary for the second vehicle
-            vehicle2_data = {
-                'make': make2,
-                'type': type2,
-                'year': int(year2),
-                'model': model2,
-                'fuel_type': fuel_type2
-            }
-            
-            # Compare depreciation with user-provided values
-            comparison_data = DepreciationService.compare_depreciation(
-                vehicle1_data, 
-                vehicle2_data, 
-                years=years,
-                annual_mileage=annual_mileage
-            )
-            
-            # Get the second vehicle object
-            vehicle2 = DepreciationService.get_or_create_vehicle(
-                make2, model2, int(year2), fuel_type2, type2
-            )
-            
-            # Generate comparison charts
-            depreciation_chart_url = ChartService.generate_depreciation_chart(
-                vehicle1, vehicle2, comparison_data
-            )
-            
-            retention_chart_url = ChartService.generate_retention_chart(
-                vehicle1, vehicle2, comparison_data
-            )
-        else:
-            # Calculate depreciation for a single vehicle
-            vehicle_depreciation = DepreciationService.calculate_depreciation(
-                vehicle1_data,
-                years=years,
-                annual_mileage=annual_mileage
-            )
-            
-            # Create a simplified comparison data structure for a single vehicle
-            comparison_data = {
-                'vehicle1': vehicle_depreciation,
-                'difference': None
-            }
-            
-            # Generate single vehicle charts
-            depreciation_chart_url = ChartService.generate_single_vehicle_chart(
-                vehicle1, vehicle_depreciation
-            )
-            
-            retention_chart_url = ChartService.generate_single_vehicle_retention_chart(
-                vehicle1, vehicle_depreciation
-            )
-            
-            # Set vehicle2 to None for the template
-            vehicle2 = None
+        retention_chart_url = ChartService.generate_multi_vehicle_retention_chart(
+            vehicle_objects, vehicle_data
+        )
         
-        # After calculating results, save the comparison
+        # Create a TCOComparison record for the primary vehicle
+        primary_vehicle = vehicle_objects[0]
         comparison_record = TCOComparison(
             # Vehicle 1 details
-            vehicle1_id=vehicle1.id,
-            vehicle1_make=vehicle1.make,
-            vehicle1_model=vehicle1.model,
-            vehicle1_year=vehicle1.year,
-            vehicle1_fuel_type=vehicle1.fuel_type,
-            vehicle1_type=vehicle1.type,
+            vehicle1_id=primary_vehicle.id,
+            vehicle1_make=primary_vehicle.make,
+            vehicle1_model=primary_vehicle.model,
+            vehicle1_year=primary_vehicle.year,
+            vehicle1_fuel_type=primary_vehicle.fuel_type,
+            vehicle1_type=primary_vehicle.type,
             
             # Analysis parameters
             annual_mileage=annual_mileage,
             ownership_years=years,
             
             # Is this a comparison?
-            is_comparison=is_comparison
+            is_comparison=len(vehicles) > 1
         )
         
-        # Set vehicle 2 details if this is a comparison
-        if is_comparison:
-            comparison_record.vehicle2_id = vehicle2.id
-            comparison_record.vehicle2_make = vehicle2.make
-            comparison_record.vehicle2_model = vehicle2.model
-            comparison_record.vehicle2_year = vehicle2.year
-            comparison_record.vehicle2_fuel_type = vehicle2.fuel_type
-            comparison_record.vehicle2_type = vehicle2.type
+        # If there's a second vehicle, add it to the comparison record
+        if len(vehicles) > 1:
+            second_vehicle = vehicle_objects[1]
+            comparison_record.vehicle2_id = second_vehicle.id
+            comparison_record.vehicle2_make = second_vehicle.make
+            comparison_record.vehicle2_model = second_vehicle.model
+            comparison_record.vehicle2_year = second_vehicle.year
+            comparison_record.vehicle2_fuel_type = second_vehicle.fuel_type
+            comparison_record.vehicle2_type = second_vehicle.type
         
         # Store the comparison data
-        comparison_record.set_comparison_data({
-            'vehicle1': {
-                'initial_cost': vehicle1_data.get('initial_cost', 0),
-                'depreciation_cost': vehicle1_data.get('depreciation_cost', 0),
-                'fuel_cost': vehicle1_data.get('fuel_cost', 0),
-                'maintenance_cost': vehicle1_data.get('maintenance_cost', 0),
-                'insurance_cost': vehicle1_data.get('insurance_cost', 0),
-                'total_cost': vehicle1_data.get('total_cost', 0),
-                'resale_value': vehicle1_data.get('resale_value', 0)
-            },
-            'vehicle2': {
-                'initial_cost': vehicle2_data.get('initial_cost', 0) if is_comparison else 0,
-                'depreciation_cost': vehicle2_data.get('depreciation_cost', 0) if is_comparison else 0,
-                'fuel_cost': vehicle2_data.get('fuel_cost', 0) if is_comparison else 0,
-                'maintenance_cost': vehicle2_data.get('maintenance_cost', 0) if is_comparison else 0,
-                'insurance_cost': vehicle2_data.get('insurance_cost', 0) if is_comparison else 0,
-                'total_cost': vehicle2_data.get('total_cost', 0) if is_comparison else 0,
-                'resale_value': vehicle2_data.get('resale_value', 0) if is_comparison else 0
-            } if is_comparison else {}
-        })
+        comparison_data_to_store = {}
+        
+        # Add data for each vehicle
+        for i, (vehicle_obj, vehicle_depr) in enumerate(zip(vehicle_objects, vehicle_data)):
+            vehicle_key = f'vehicle{i+1}'
+            comparison_data_to_store[vehicle_key] = {
+                'initial_cost': vehicle_depr.get('initial_price', 0),
+                'depreciation_cost': vehicle_depr.get('total_depreciation', 0),
+                'fuel_cost': 0,  # These would need to be calculated
+                'maintenance_cost': 0,
+                'insurance_cost': 0,
+                'total_cost': vehicle_depr.get('total_depreciation', 0),  # Simplified for now
+                'resale_value': vehicle_depr.get('final_value', 0)
+            }
+        
+        comparison_record.set_comparison_data(comparison_data_to_store)
         
         # Store the charts
         comparison_record.depreciation_chart = depreciation_chart_url
@@ -172,15 +142,14 @@ def compare_depreciation():
         
         # Render results template
         return render_template(
-            'partials/tco_results.html',
-            vehicle1=vehicle1,
-            vehicle2=vehicle2,
-            comparison=comparison_data,
+            'partials/multi_vehicle_results.html',
+            vehicles=vehicle_objects,
+            vehicle_data=vehicle_data,
             depreciation_chart_url=depreciation_chart_url,
             retention_chart_url=retention_chart_url,
             years=years,
             annual_mileage=annual_mileage,
-            is_comparison=is_comparison
+            vehicle_count=len(vehicles)
         )
         
     except Exception as e:
