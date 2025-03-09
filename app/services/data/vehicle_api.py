@@ -12,16 +12,13 @@ class EPAFuelEconomyService:
         response = EPAFuelEconomyService._make_request(endpoint)
         
         if not response:
-            # Fallback to a reasonable range of years
-            current_year = 2023  # You might want to calculate this dynamically
+            current_year = 2023
             years = [(year, year) for year in range(current_year, current_year-20, -1)]
             return years
         
-        # Extract years from the response
         years = []
         menu_items = response.get('menuItem', [])
         
-        # Handle both list and dictionary responses
         if isinstance(menu_items, list):
             for item in menu_items:
                 if isinstance(item, dict):
@@ -30,7 +27,6 @@ class EPAFuelEconomyService:
                         year_int = int(year)
                         years.append((year_int, year_int))
                 elif isinstance(item, str) and item.isdigit():
-                    # If it's a string and a digit, use it directly as the year
                     year_int = int(item)
                     years.append((year_int, year_int))
         elif isinstance(menu_items, dict):
@@ -39,7 +35,6 @@ class EPAFuelEconomyService:
                 year_int = int(year)
                 years.append((year_int, year_int))
         
-        # Sort years in descending order (newest first)
         years.sort(reverse=True)
         return years
     
@@ -49,24 +44,21 @@ class EPAFuelEconomyService:
         if year:
             endpoint = f"vehicle/menu/make?year={year}"
         else:
-            # If no year provided, we'll use the most recent year
             years = EPAFuelEconomyService.get_years()
             if years:
-                year = years[0][0]  # Get the first (most recent) year
+                year = years[0][0]
                 endpoint = f"vehicle/menu/make?year={year}"
             else:
-                return []  # No years available
+                return []
         
         response = EPAFuelEconomyService._make_request(endpoint)
         
         if not response:
             return []
         
-        # Extract makes from the response
         makes = []
         menu_items = response.get('menuItem', [])
         
-        # Handle both list and dictionary responses
         if isinstance(menu_items, list):
             for item in menu_items:
                 if isinstance(item, dict):
@@ -74,14 +66,12 @@ class EPAFuelEconomyService:
                     if make:
                         makes.append((make, make))
                 elif isinstance(item, str):
-                    # If it's a string, use it directly as the make
                     makes.append((item, item))
         elif isinstance(menu_items, dict):
             make = menu_items.get('value')
             if make:
                 makes.append((make, make))
         
-        # Sort makes alphabetically
         makes.sort()
         return makes
     
@@ -94,11 +84,9 @@ class EPAFuelEconomyService:
         if not response:
             return []
         
-        # Extract models from the response
         models = []
         menu_items = response.get('menuItem', [])
         
-        # Handle both list and dictionary responses
         if isinstance(menu_items, list):
             for item in menu_items:
                 if isinstance(item, dict):
@@ -106,14 +94,12 @@ class EPAFuelEconomyService:
                     if model:
                         models.append((model, model))
                 elif isinstance(item, str):
-                    # If it's a string, use it directly as the model
                     models.append((item, item))
         elif isinstance(menu_items, dict):
             model = menu_items.get('value')
             if model:
                 models.append((model, model))
         
-        # Sort models alphabetically
         models.sort()
         return models
     
@@ -123,7 +109,6 @@ class EPAFuelEconomyService:
         EPA doesn't have a direct vehicle type endpoint like NHTSA.
         For compatibility, we'll return a simplified list of common vehicle types.
         """
-        # Common vehicle types
         vehicle_types = [
             {"Name": "Sedan", "VehicleTypeId": "Sedan"},
             {"Name": "SUV", "VehicleTypeId": "SUV"},
@@ -139,19 +124,15 @@ class EPAFuelEconomyService:
     @staticmethod
     def get_fuel_types(make: str, model: str, year: int) -> List[Tuple[str, str]]:
         """Get available fuel types for a specific make/model/year"""
-        # First get the vehicle options to find vehicle IDs
         options_endpoint = f"vehicle/menu/options?year={year}&make={make}&model={model}"
         options_response = EPAFuelEconomyService._make_request(options_endpoint)
         
         if not options_response:
-            print(f"No options response for: {make} {model} {year}")
             return EPAFuelEconomyService.default_fuel_types()
         
-        # Extract vehicle IDs from options
         vehicle_ids = []
         menu_items = options_response.get('menuItem', [])
         
-        # Handle both list and dictionary responses
         if isinstance(menu_items, list):
             for item in menu_items:
                 if isinstance(item, dict):
@@ -166,22 +147,17 @@ class EPAFuelEconomyService:
                 vehicle_ids.append(vehicle_id)
         
         if not vehicle_ids:
-            print(f"No vehicle IDs found for: {make} {model} {year}")
             return EPAFuelEconomyService.default_fuel_types()
         
-        # Get fuel types from vehicle details
         fuel_types = set()
         
-        # Limit to first 5 vehicle IDs to avoid too many API calls
         for vehicle_id in vehicle_ids[:5]:
             vehicle_endpoint = f"vehicle/{vehicle_id}"
             vehicle_response = EPAFuelEconomyService._make_request(vehicle_endpoint)
             
             if vehicle_response:
-                # Extract fuel type and enhance it with more information
                 fuel_type = vehicle_response.get('fuelType')
                 if fuel_type:
-                    # Map basic fuel types to more descriptive versions
                     if fuel_type == 'Regular Gasoline' or fuel_type == 'Regular':
                         display_name = 'Gasoline (Regular 87 octane)'
                     elif fuel_type == 'Premium Gasoline' or fuel_type == 'Premium':
@@ -195,7 +171,6 @@ class EPAFuelEconomyService:
                             else:
                                 display_name = 'Plug-in Hybrid (Regular Gas + Electric)'
                         else:
-                            # Pure electric
                             display_name = 'Electric Vehicle (Battery Only)'
                     elif 'Hybrid' in fuel_type:
                         display_name = 'Hybrid (Gasoline + Electric, Non Plug-in)'
@@ -206,18 +181,13 @@ class EPAFuelEconomyService:
                     elif 'Natural Gas' in fuel_type or 'CNG' in fuel_type:
                         display_name = 'Compressed Natural Gas (CNG)'
                     else:
-                        # If we can't map it, use the original with a note
                         display_name = f'{fuel_type} (See vehicle manual)'
                     
-                    # Add to our set of fuel types
                     fuel_types.add((fuel_type, display_name))
         
-        # Convert to list and sort
         fuel_types = sorted(list(fuel_types))
         
-        # If no fuel types found, use default list
         if not fuel_types:
-            print(f"No fuel types found for: {make} {model} {year}, using defaults")
             return EPAFuelEconomyService.default_fuel_types()
         
         return fuel_types
@@ -254,23 +224,13 @@ class EPAFuelEconomyService:
             if response.status_code == 200:
                 try:
                     data = response.json()
-                    # Print the response structure for debugging
-                    if 'model' in endpoint or 'make' in endpoint or 'year' in endpoint or 'options' in endpoint:
-                        print(f"API Response for {url}: {str(data)[:200]}...")
-                        if data is not None:  # Check if data is not None
-                            print(f"Type of menuItem: {type(data.get('menuItem'))}")
-                            if isinstance(data.get('menuItem'), list) and data.get('menuItem'):
-                                print(f"Type of first item in menuItem: {type(data['menuItem'][0])}")
                     return data
                 except ValueError as e:
-                    print(f"EPA API JSON parsing error: {e}")
                     return None
             else:
-                print(f"EPA API error: {response.status_code} for URL: {url}")
                 return None
                 
         except requests.RequestException as e:
-            print(f"EPA API request exception: {e}")
             return None
 
 

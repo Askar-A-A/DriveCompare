@@ -77,10 +77,6 @@ class ChartService:
         for value in v2_values[1:]:
             v2_retention.append((value / v2_initial) * 100)
         
-        # Debug output
-        print("Vehicle 1 retention:", v1_retention)
-        print("Vehicle 2 retention:", v2_retention)
-        
         # Plot data with different styles to ensure visibility
         plt.plot(years, v1_retention, 'b-', linewidth=2.5, label=f"{vehicle1.make} {vehicle1.model}")
         plt.plot(years, v2_retention, 'r--', linewidth=2.5, label=f"{vehicle2.make} {vehicle2.model}")

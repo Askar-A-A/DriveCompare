@@ -57,7 +57,6 @@ class TCOComparison(db.Model):
                 data['vehicle2'] = {}
             return data
         except Exception as e:
-            print(f"Error parsing comparison data: {e}")
             return {'vehicle1': {}, 'vehicle2': {}}
     
     def set_comparison_data(self, data):

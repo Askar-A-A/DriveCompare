@@ -22,9 +22,7 @@ class DepreciationService:
         Returns:
             Vehicle object
         """
-        # Determine vehicle type if not provided
         if not vehicle_type:
-            # Simple logic to determine vehicle type from model name
             model_lower = model.lower()
             if any(term in model_lower for term in ['truck', 'pickup']):
                 vehicle_type = 'Truck'
@@ -35,9 +33,8 @@ class DepreciationService:
             elif any(term in model_lower for term in ['coupe', 'convertible', 'roadster']):
                 vehicle_type = 'Sports Car'
             else:
-                vehicle_type = 'Sedan'  # Default to sedan
+                vehicle_type = 'Sedan'
         
-        # Check if vehicle exists in database
         vehicle = Vehicle.query.filter_by(
             make=make,
             model=model,
@@ -46,7 +43,6 @@ class DepreciationService:
             type=vehicle_type
         ).first()
         
-        # If vehicle doesn't exist, create it
         if not vehicle:
             vehicle = Vehicle(
                 make=make,
@@ -58,7 +54,6 @@ class DepreciationService:
             )
             db.session.add(vehicle)
             db.session.commit()
-            print(f"Created new vehicle: {make} {model} {year} {fuel_type} {vehicle_type}")
         
         return vehicle
     
@@ -75,7 +70,6 @@ class DepreciationService:
         Returns:
             Dictionary with depreciation data
         """
-        # If vehicle is a dict, get or create the vehicle object
         if isinstance(vehicle, dict):
             vehicle = DepreciationService.get_or_create_vehicle(
                 vehicle['make'],
@@ -85,7 +79,6 @@ class DepreciationService:
                 vehicle.get('type')
             )
         
-        # Get initial vehicle price
         initial_price = PricingService.get_vehicle_price(
             vehicle.make, 
             vehicle.model, 
@@ -93,58 +86,46 @@ class DepreciationService:
             vehicle.type
         )
         
-        # Define depreciation rates (k values) for exponential decay model
         base_depreciation_rates = {
-            'year_1': 0.19,  # ~17% depreciation in first year
-            'year_2': 0.17,  # ~16% depreciation in second year
-            'year_3': 0.14,  # ~13% depreciation in third year
-            'year_4': 0.12,  # ~11% depreciation in fourth year
-            'year_5': 0.10,  # ~9.5% depreciation in fifth year
-            'mileage_impact': 0.00015  # Impact of mileage on depreciation rate
+            'year_1': 0.19,
+            'year_2': 0.17,
+            'year_3': 0.14,
+            'year_4': 0.12,
+            'year_5': 0.10,
+            'mileage_impact': 0.00015
         }
         
-        # Adjust depreciation rates based on vehicle type and fuel type
         if vehicle.type == 'Electric':
-            # Electric vehicles depreciate faster in early years
             base_depreciation_rates['year_1'] = 0.25
             base_depreciation_rates['year_2'] = 0.20
         elif vehicle.type == 'Luxury':
-            # Luxury vehicles depreciate faster
             base_depreciation_rates['year_1'] = 0.22
             base_depreciation_rates['year_2'] = 0.19
         
         if vehicle.fuel_type == 'Electric':
-            # Electric vehicles depreciate faster in early years
             base_depreciation_rates['year_1'] = 0.25
             base_depreciation_rates['year_2'] = 0.20
         elif vehicle.fuel_type == 'Hybrid':
-            # Hybrids depreciate slightly slower
             base_depreciation_rates['year_1'] = 0.17
             base_depreciation_rates['year_2'] = 0.15
         
-        # Calculate yearly depreciation using exponential decay
         yearly_values = []
         current_value = initial_price
         
         for year in range(1, years + 1):
-            # Get the base depreciation rate for this year
             year_attr = f'year_{year}'
-            base_k = base_depreciation_rates.get(year_attr, 0.08)  # Default to 8% if beyond year 5
+            base_k = base_depreciation_rates.get(year_attr, 0.08)
             
-            # Adjust depreciation rate based on mileage, but ensure it never goes negative
             mileage_adjustment = (annual_mileage - 12000) * base_depreciation_rates['mileage_impact']
-            adjusted_k = max(0.02, base_k + mileage_adjustment)  # Ensure minimum 2% depreciation
+            adjusted_k = max(0.02, base_k + mileage_adjustment)
             
-            # Calculate new value using exponential decay
             depreciation_factor = math.exp(-adjusted_k)
             new_value = current_value * depreciation_factor
             
-            # Ensure car always depreciates (value never increases)
             new_value = min(current_value, new_value)
             
             depreciation_amount = current_value - new_value
             
-            # Calculate effective depreciation rate as a percentage
             effective_rate = (1 - (new_value / current_value)) * 100
             
             yearly_values.append({
