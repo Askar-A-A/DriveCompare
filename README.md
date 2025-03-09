@@ -1,3 +1,4 @@
+Tech Stack (note for myself)
 # Web Framework:
 Flask==2.3.3
 Werkzeug==2.3.7
