@@ -1,3 +1,5 @@
+Web application to calculate and compare the Tottal Cost of Owership of the vehicle 
+
 Tech Stack (note for myself)
 # Web Framework:
 Flask==2.3.3
